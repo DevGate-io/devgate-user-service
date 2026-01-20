@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1768855504676-1
+      author: progger
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                  name: id
+                  type: UUID
+              - column:
+                  name: full_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_login
+                  type: DATETIME
+              - column:
+                  name: role
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+            tableName: users

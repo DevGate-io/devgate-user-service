@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.devgate"
-version = "0.1.0"
+version = "0.1.1"
 description = "User service"
 
 java {
@@ -65,6 +65,7 @@ dependencies {
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testRuntimeOnly("com.h2database:h2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -80,6 +81,6 @@ tasks.apply {
 	}
 
 	bootJar {
-		archiveBaseName.set("${project.name}.jar")
+		archiveFileName.set("${project.name}.jar")
 	}
 }

@@ -1,8 +1,11 @@
-package com.devgate.user_service.model
+package com.devgate.user_service.models
 
 import com.devgate.core.models.enums.Role
 import org.hibernate.annotations.UuidGenerator
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
 import org.jetbrains.annotations.NotNull
 import tools.jackson.databind.annotation.JsonSerialize
 import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer
@@ -18,6 +21,8 @@ data class User(
 	private val id: UUID,
 
 	@Column(name = "full_name")
+	@NotBlank
+	@NotNull
 	private val fullName: String,
 
 	@Column(name = "last_login")
@@ -25,8 +30,16 @@ data class User(
 	private val lastLogin: LocalDateTime,
 
 	@Enumerated(EnumType.STRING)
-	private val role: Role,
+	@NotNull
+	private val role: Role = Role.MEMBER,
 
 	@NotNull
-	private val email: String
+	@NotBlank
+	@Email
+	private val email: String,
+
+	@NotNull
+	@NotBlank
+	@Size(min = 8)
+	private val password: String
 )

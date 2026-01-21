@@ -1,3 +1,40 @@
 spring:
   application:
     name: devgate-user-service
+
+  docker:
+    compose:
+      file: docker/dev/compose.yaml
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  cache:
+    type: redis
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    url: ${DB_URL}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+  web:
+    resources:
+      add-mappings: false
+
+server:
+  port: 8081
+
+logging:
+  level:
+    com:
+      devgate:
+          user_service: DEBUG
+    org:
+      hibernate:
+          transaction: DEBUG
+      springframework:
+          transaction: DEBUG

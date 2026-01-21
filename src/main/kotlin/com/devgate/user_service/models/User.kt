@@ -1,15 +1,15 @@
 package com.devgate.user_service.models
 
 import com.devgate.core.models.enums.Role
-import org.hibernate.annotations.UuidGenerator
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import org.jetbrains.annotations.NotNull
+import org.hibernate.annotations.UuidGenerator
 import tools.jackson.databind.annotation.JsonSerialize
-import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer
-import java.time.LocalDateTime
+import tools.jackson.databind.ext.javatime.ser.InstantSerializer
+import java.time.Instant
 import java.util.*
 
 @Table(name = "users")
@@ -18,28 +18,27 @@ data class User(
 	@Id
 	@GeneratedValue
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
-	private val id: UUID,
+	var id: UUID? = null,
 
 	@Column(name = "full_name")
 	@NotBlank
 	@NotNull
-	private val fullName: String,
+	var fullName: String,
 
 	@Column(name = "last_login")
-	@JsonSerialize(using = LocalDateTimeSerializer::class)
-	private val lastLogin: LocalDateTime,
+	@JsonSerialize(using = InstantSerializer::class)
+	var lastLogin: Instant? = null,
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
-	private val role: Role = Role.MEMBER,
+	var role: Role = Role.MEMBER,
 
-	@NotNull
-	@NotBlank
 	@Email
-	private val email: String,
+	val email: String,
 
 	@NotNull
 	@NotBlank
 	@Size(min = 8)
-	private val password: String
+	@Column("hashed_password")
+	var hashedPassword: String
 )

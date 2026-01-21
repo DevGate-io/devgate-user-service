@@ -4,10 +4,11 @@ plugins {
 	id("org.springframework.boot") version "4.0.1"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("org.liquibase.gradle") version "2.2.0"
+	kotlin("plugin.jpa") version "2.2.21"
 }
 
 group = "com.devgate"
-version = "0.1.1"
+version = "0.2.0"
 description = "User service"
 
 java {
@@ -25,6 +26,9 @@ configurations {
 repositories {
 	mavenCentral()
 }
+
+
+val mockitoAgent: Configuration? = configurations.create("mockitoAgent")
 
 dependencies {
 //	starters
@@ -45,7 +49,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-
+	
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("tools.jackson.module:jackson-module-kotlin")
 
@@ -67,6 +71,8 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("com.h2database:h2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.mockito:mockito-core:5.21.0")
+	mockitoAgent?.invoke("org.mockito:mockito-core") { isTransitive = false }
 }
 
 kotlin {
@@ -75,9 +81,13 @@ kotlin {
 	}
 }
 
-tasks.apply {
+tasks {
 	withType<Test> {
 		useJUnitPlatform()
+	}
+
+	test {
+		jvmArgs.add("-javaagent:${mockitoAgent?.asPath}")
 	}
 
 	bootJar {

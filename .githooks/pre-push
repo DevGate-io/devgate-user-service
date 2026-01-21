@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "🔍 Проверка build..."
+if ! ./gradlew build --stacktrace; then
+	echo "🚫 Сборка завершилась с ошибкой. Пуш отменён."
+	exit 1
+fi
+
+echo "  Сборка прошла успешно, пуш одобрен"

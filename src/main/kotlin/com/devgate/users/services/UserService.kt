@@ -1,7 +1,7 @@
-package com.devgate.user_service.services
+package com.devgate.users.services
 
-import com.devgate.user_service.dto.UserDto
-import com.devgate.user_service.models.User
+import com.devgate.users.dto.UserDto
+import com.devgate.users.models.User
 import java.util.*
 
 interface UserService {

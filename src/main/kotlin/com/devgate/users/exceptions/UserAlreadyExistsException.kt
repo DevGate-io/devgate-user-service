@@ -1,4 +1,4 @@
-package com.devgate.user_service.exceptions
+package com.devgate.users.exceptions
 
 import org.springframework.http.HttpStatus
 

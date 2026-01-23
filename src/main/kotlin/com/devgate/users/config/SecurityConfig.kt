@@ -1,4 +1,4 @@
-package com.devgate.user_service.config
+package com.devgate.users.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,7 +14,7 @@ class SecurityConfig {
 	@Bean
 	fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
 		http.cors { it.configurationSource { corsConfiguration() } }
-			.csrf { it.disable()}
+			.csrf { it.disable() }
 			.authorizeHttpRequests {
 				it.anyRequest().permitAll()
 			}

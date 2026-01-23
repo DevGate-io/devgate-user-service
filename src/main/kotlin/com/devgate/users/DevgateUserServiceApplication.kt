@@ -1,4 +1,4 @@
-package com.devgate.user_service
+package com.devgate.users
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class DevgateUserServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<DevgateUserServiceApplication>(*args)
+	runApplication<DevgateUserServiceApplication>(*args)
 }

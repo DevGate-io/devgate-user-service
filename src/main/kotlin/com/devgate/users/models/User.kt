@@ -1,6 +1,6 @@
-package com.devgate.user_service.models
+package com.devgate.users.models
 
-import com.devgate.core.models.enums.Role
+import com.devgate.users.models.enums.Role
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank

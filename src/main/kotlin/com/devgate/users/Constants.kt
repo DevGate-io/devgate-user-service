@@ -1,4 +1,4 @@
-package com.devgate.user_service
+package com.devgate.users
 
 object Constants {
 

@@ -1,13 +1,13 @@
-package com.devgate.user_service.services
+package com.devgate.users.services
 
-import com.devgate.core.models.enums.Role
-import com.devgate.user_service.dto.UserDto
-import com.devgate.user_service.exceptions.UserAlreadyExistsException
-import com.devgate.user_service.exceptions.UserNotFoundException
-import com.devgate.user_service.models.User
-import com.devgate.user_service.repositories.UserRepository
-import com.devgate.user_service.services.impl.UserServiceImpl
-import com.devgate.user_service.utils.PasswordEncoder
+import com.devgate.users.dto.UserDto
+import com.devgate.users.exceptions.UserAlreadyExistsException
+import com.devgate.users.exceptions.UserNotFoundException
+import com.devgate.users.models.User
+import com.devgate.users.models.enums.Role
+import com.devgate.users.repositories.UserRepository
+import com.devgate.users.services.impl.UserServiceImpl
+import com.devgate.users.utils.PasswordEncoder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test

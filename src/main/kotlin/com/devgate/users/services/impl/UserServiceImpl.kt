@@ -1,12 +1,12 @@
-package com.devgate.user_service.services.impl
+package com.devgate.users.services.impl
 
-import com.devgate.user_service.dto.UserDto
-import com.devgate.user_service.exceptions.UserAlreadyExistsException
-import com.devgate.user_service.exceptions.UserNotFoundException
-import com.devgate.user_service.models.User
-import com.devgate.user_service.repositories.UserRepository
-import com.devgate.user_service.services.UserService
-import com.devgate.user_service.utils.PasswordEncoder
+import com.devgate.users.dto.UserDto
+import com.devgate.users.exceptions.UserAlreadyExistsException
+import com.devgate.users.exceptions.UserNotFoundException
+import com.devgate.users.models.User
+import com.devgate.users.repositories.UserRepository
+import com.devgate.users.services.UserService
+import com.devgate.users.utils.PasswordEncoder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.Instant

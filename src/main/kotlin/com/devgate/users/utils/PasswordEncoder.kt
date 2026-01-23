@@ -1,4 +1,4 @@
-package com.devgate.user_service.utils
+package com.devgate.users.utils
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component

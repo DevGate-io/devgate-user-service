@@ -1,3 +1,4 @@
+name: devgate-user-service
 services:
   db:
     image: 'postgres:latest'

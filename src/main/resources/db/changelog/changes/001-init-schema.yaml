@@ -4,6 +4,8 @@ databaseChangeLog:
       author: progger
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
+        - sql:
+            sql: SELECT 'CREATE DATABASE devgate-users' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'devgate-users')
         - createTable:
             columns:
               - column:
@@ -14,15 +16,24 @@ databaseChangeLog:
                   name: id
                   type: UUID
               - column:
+                  constraints:
+                    nullable: false
                   name: full_name
                   type: VARCHAR(255)
               - column:
                   name: last_login
                   type: DATETIME
               - column:
+                  constraints:
+                    nullable: false
                   name: role
                   type: VARCHAR(255)
               - column:
                   name: email
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: hashed_password
                   type: VARCHAR(255)
             tableName: users

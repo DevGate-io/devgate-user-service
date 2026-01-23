@@ -1,4 +1,4 @@
-package com.devgate.core.models.enums
+package com.devgate.users.models.enums
 
 enum class Role(private val roleName: String) {
 	MEMBER("member"),

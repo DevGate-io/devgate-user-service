@@ -1,9 +1,10 @@
-package com.devgate.user_service.controllers
+package com.devgate.users.controllers
 
-import com.devgate.user_service.Endpoints
-import com.devgate.user_service.dto.UserDto
-import com.devgate.user_service.models.User
-import com.devgate.user_service.services.UserService
+import com.devgate.users.Endpoints
+import com.devgate.users.dto.UserDto
+import com.devgate.users.models.User
+import com.devgate.users.services.UserService
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -42,7 +43,7 @@ class UserController(
 	}
 
 	@PostMapping
-	fun createUser(@RequestBody body: UserDto): ResponseEntity<User> {
+	fun createUser(@RequestBody @Valid body: UserDto): ResponseEntity<User> {
 		return ResponseEntity.ok(userService.createUser(body))
 	}
 }

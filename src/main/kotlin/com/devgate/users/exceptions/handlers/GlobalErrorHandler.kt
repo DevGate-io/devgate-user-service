@@ -1,6 +1,6 @@
-package com.devgate.user_service.exceptions.handlers
+package com.devgate.users.exceptions.handlers
 
-import com.devgate.user_service.exceptions.ApiException
+import com.devgate.users.exceptions.ApiException
 import org.springframework.http.ProblemDetail
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice

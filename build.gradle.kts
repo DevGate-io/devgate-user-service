@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.devgate"
-version = "0.2.0"
+version = "0.2.2"
 description = "User service"
 
 java {
@@ -28,7 +28,7 @@ repositories {
 }
 
 
-val mockitoAgent: Configuration? = configurations.create("mockitoAgent")
+val mockitoAgent: Configuration = configurations.create("mockitoAgent")
 
 dependencies {
 //	starters
@@ -49,7 +49,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-	
+
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("tools.jackson.module:jackson-module-kotlin")
 
@@ -72,7 +72,7 @@ dependencies {
 	testRuntimeOnly("com.h2database:h2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.mockito:mockito-core:5.21.0")
-	mockitoAgent?.invoke("org.mockito:mockito-core") { isTransitive = false }
+	mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
 }
 
 kotlin {
@@ -87,10 +87,10 @@ tasks {
 	}
 
 	test {
-		jvmArgs.add("-javaagent:${mockitoAgent?.asPath}")
+		jvmArgs.add("-javaagent:${mockitoAgent.asPath}")
 	}
 
 	bootJar {
-		archiveFileName.set("${project.name}.jar")
+		archiveFileName.set("${project.group}.${project.name}.jar")
 	}
 }

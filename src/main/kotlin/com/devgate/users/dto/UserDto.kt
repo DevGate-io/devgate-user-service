@@ -1,6 +1,6 @@
-package com.devgate.user_service.dto
+package com.devgate.users.dto
 
-import com.devgate.core.models.enums.Role
+import com.devgate.users.models.enums.Role
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull

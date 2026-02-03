@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1769205343425-1
+      author: progger
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  name: expires_at
+                  type: DATETIME
+              - column:
+                  name: token
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_refresh_tokens
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_refresh_tokens
+                  name: user_id
+                  type: UUID
+            tableName: refresh_tokens
+

@@ -8,3 +8,8 @@ spring:
     password: ""
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+
+jwt:
+  secret: ODVkYmUxNWQ3NWVmOTMwOGM3YWUwZjMzYzdhMzI0Y2M2ZjRiZjUxOWEyZWQyZjMwMjdiZDMzYzE0MGE0ZjlhYQ==
+  cookie:
+    name: jwt-refresh-cookie

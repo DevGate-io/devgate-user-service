@@ -10,4 +10,6 @@ interface UserService {
 	fun getUserById(id: UUID?): User
 	fun deleteUserById(id: UUID?)
 	fun createUser(request: UserDto): User
+	fun getCurrentUser(): User
+	fun updateUser(dto: UserDto): User
 }

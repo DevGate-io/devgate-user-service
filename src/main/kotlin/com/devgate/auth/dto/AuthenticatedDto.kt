@@ -1,0 +1,18 @@
+package com.devgate.auth.dto
+
+import com.devgate.auth.dto.responses.AuthenticatedResponse
+import com.devgate.users.models.User
+import org.springframework.http.ResponseCookie
+
+data class AuthenticatedDto(
+	override var user: User,
+	override var accessToken: String,
+	var cookie: ResponseCookie
+) : AuthPayload
+
+fun AuthenticatedDto.toAuthenticatedResponse(): AuthenticatedResponse {
+	return AuthenticatedResponse(
+		user = this.user,
+		accessToken = this.accessToken,
+	)
+}

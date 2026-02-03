@@ -1,13 +1,14 @@
 package com.devgate.users.services
 
+import com.devgate.exceptions.UserAlreadyExistsException
+import com.devgate.exceptions.UserNotFoundException
 import com.devgate.users.dto.UserDto
-import com.devgate.users.exceptions.UserAlreadyExistsException
-import com.devgate.users.exceptions.UserNotFoundException
 import com.devgate.users.models.User
+import com.devgate.users.models.copy
 import com.devgate.users.models.enums.Role
 import com.devgate.users.repositories.UserRepository
 import com.devgate.users.services.impl.UserServiceImpl
-import com.devgate.users.utils.PasswordEncoder
+import com.devgate.utils.PasswordEncoder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -20,6 +21,10 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
 import java.util.*
 
@@ -126,7 +131,7 @@ internal class UserServiceTest {
 		`when`(userRepository.existsByEmail(userDto.email))
 			.thenReturn(false)
 
-		`when`(passwordEncoder.encodePassword(anyString()))
+		`when`(passwordEncoder.encode(anyString()))
 			.thenReturn("this is hashed password")
 
 		`when`(userRepository.save(any(User::class.java)))
@@ -150,4 +155,131 @@ internal class UserServiceTest {
 			userService.createUser(userDto)
 		}
 	}
+
+	@Test
+	@WithMockUser(username = "test@test.com")
+	fun `getCurrentUser - positive`() {
+		`when`(userRepository.findByEmail(fakeUser.email)).thenReturn(fakeUser)
+
+		val authentication = UsernamePasswordAuthenticationToken(
+			fakeUser.email, null, fakeUser.authorities
+		)
+
+		SecurityContextHolder.getContext().authentication = authentication
+		val result = userService.getCurrentUser()
+
+		assertEquals(fakeUser, result)
+		SecurityContextHolder.clearContext()
+	}
+
+	@Test
+	fun `getCurrentUser - negative`() {
+		assertThrows(ResponseStatusException::class.java) {
+			userService.getCurrentUser()
+		}
+	}
+
+	@Test
+	fun `getCurrentUser - not authenticated`() {
+		val authentication = UsernamePasswordAuthenticationToken(
+			"test@test.com",
+			null,
+			emptyList()
+		).apply {
+			isAuthenticated = false
+		}
+
+		SecurityContextHolder.getContext().authentication = authentication
+
+		assertThrows(ResponseStatusException::class.java) {
+			userService.getCurrentUser()
+		}
+
+		SecurityContextHolder.clearContext()
+	}
+
+	@Test
+	fun `getCurrentUser - user not found`() {
+		val authentication = UsernamePasswordAuthenticationToken(
+			"test@test.com", null, emptyList()
+		)
+
+		SecurityContextHolder.getContext().authentication = authentication
+		`when`(userRepository.findByEmail("test@test.com")).thenReturn(null)
+
+		assertThrows(UserNotFoundException::class.java) {
+			userService.getCurrentUser()
+		}
+
+		SecurityContextHolder.clearContext()
+	}
+
+
+	@Test
+	fun `updateLastLogin - null id`() {
+		assertThrows(UserNotFoundException::class.java) {
+			userService.updateLastLogin(null)
+		}
+	}
+
+	@Test
+	fun `getUserById - null id`() {
+		assertThrows(UserNotFoundException::class.java) {
+			userService.getUserById(null)
+		}
+	}
+
+	@Test
+	fun `deleteUserById - null id`() {
+		assertThrows(UserNotFoundException::class.java) {
+			userService.deleteUserById(null)
+		}
+	}
+
+	@Test
+	fun `createUser - password encoding failed`() {
+		`when`(userRepository.existsByEmail(userDto.email)).thenReturn(false)
+		`when`(passwordEncoder.encode(anyString())).thenReturn(null)
+
+		assertThrows(ResponseStatusException::class.java) {
+			userService.createUser(userDto)
+		}
+	}
+
+	@Test
+	fun `updateUser - positive case`() {
+		val oldUser = fakeUser
+		`when`(userRepository.findByEmail(userDto.email)).thenReturn(oldUser)
+		`when`(passwordEncoder.encode(anyString())).thenReturn("new hashed password")
+		`when`(userRepository.save(any(User::class.java)))
+			.thenAnswer { it.arguments[0] as User }
+
+		val result = userService.updateUser(userDto)
+
+		assertEquals(oldUser.id, result.id)
+		assertEquals(oldUser.lastLogin, result.lastLogin)
+		assertEquals("new hashed password", result.hashedPassword)
+		assertEquals(userDto.fullName, result.fullName)
+		assertEquals(userDto.role, result.role)
+	}
+
+	@Test
+	fun `updateUser - user not found`() {
+		`when`(userRepository.findByEmail(userDto.email)).thenReturn(null)
+
+		assertThrows(UserNotFoundException::class.java) {
+			userService.updateUser(userDto)
+		}
+	}
+
+	@Test
+	fun `updateUser - password encoding failed`() {
+		`when`(userRepository.findByEmail(userDto.email)).thenReturn(fakeUser)
+		`when`(passwordEncoder.encode(anyString())).thenReturn(null)
+
+		assertThrows(ResponseStatusException::class.java) {
+			userService.updateUser(userDto)
+		}
+	}
+
 }

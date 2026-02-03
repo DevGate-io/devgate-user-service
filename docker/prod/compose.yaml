@@ -25,14 +25,7 @@ services:
       - ./src/main/resources:/app/src/main/resources
     command: [ "java", "-jar", "/app/com.devgate.users.jar" ]
     depends_on:
-      - redis
       - db
-  redis:
-    image: 'redis:latest'
-    ports:
-      - '6379'
-    networks:
-      - app_network
-
 networks:
   app_network:
+    external: true

@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1769374373057-1
+      author: pr0gger1
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropPrimaryKey:
+            tableName: refresh_tokens
+            constraintName: pk_refresh_tokens
+
+        - addPrimaryKey:
+            tableName: refresh_tokens
+            columnNames: id
+            constraintName: pk_refresh_tokens_id

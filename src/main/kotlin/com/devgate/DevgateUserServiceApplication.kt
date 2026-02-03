@@ -1,4 +1,4 @@
-package com.devgate.users
+package com.devgate
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

@@ -10,17 +10,11 @@ spring:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
-  cache:
-    type: redis
   datasource:
     driver-class-name: org.postgresql.Driver
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
   web:
     resources:
       add-mappings: false
@@ -52,3 +46,5 @@ logging:
 
 jwt:
   secret: ${JWT_SECRET_BASE64}
+  cookie:
+    name: jwt-refresh-cookie

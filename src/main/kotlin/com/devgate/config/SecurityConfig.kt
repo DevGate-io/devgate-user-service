@@ -2,12 +2,14 @@ package com.devgate.config
 
 import com.devgate.auth.security.RequestFilter
 import com.devgate.utils.PasswordEncoder
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -17,11 +19,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration
 
 @EnableWebSecurity
+@EnableMethodSecurity
 @Configuration
 class SecurityConfig(
 	private val requestFilter: RequestFilter,
 	private val passwordEncoder: PasswordEncoder,
-	private val userDetailsService: UserDetailsService
+	private val userDetailsService: UserDetailsService,
+
+	@Value($$"${cors.allowed-origins:http://localhost:3000}")
+	private val allowedOrigins: List<String>,
 ) {
 
 	@Bean
@@ -44,7 +50,12 @@ class SecurityConfig(
 			.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter::class.java)
 			.authenticationProvider(authenticationProvider())
 			.authorizeHttpRequests {
-				it.requestMatchers("/auth/**").permitAll()
+				it.requestMatchers(
+					"/auth/login",
+					"/auth/register",
+					"/auth/refresh",
+					"/auth/logout"
+				).permitAll()
 				it.anyRequest().authenticated()
 			}
 
@@ -54,10 +65,12 @@ class SecurityConfig(
 	fun corsConfiguration(): CorsConfiguration {
 		val corsConfiguration = CorsConfiguration()
 
-		corsConfiguration.allowedOriginPatterns = listOf("*")
-		corsConfiguration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+		corsConfiguration.allowedOrigins = allowedOrigins
+		corsConfiguration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 		corsConfiguration.allowedHeaders = listOf("*")
+		corsConfiguration.exposedHeaders = listOf("Set-Cookie")
 		corsConfiguration.allowCredentials = true
+		corsConfiguration.maxAge = 3600L
 
 		return corsConfiguration
 	}

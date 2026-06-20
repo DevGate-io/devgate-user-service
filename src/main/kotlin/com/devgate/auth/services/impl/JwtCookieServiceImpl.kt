@@ -12,23 +12,36 @@ import java.time.Duration
 @Service
 class JwtCookieServiceImpl(
 	@Value($$"${jwt.cookie.name}")
-	private val cookieName: String
-) : JwtCookieService {
-	override fun generateCookie(token: String): ResponseCookie {
-		return ResponseCookie.from(
-			cookieName,
-			token
-		)
-			.httpOnly(true)
-			.path(Constants.REFRESH_PATH)
-			.maxAge(Duration.ofDays(30))
-			.build()
+	private val cookieName: String,
 
+	@Value($$"${jwt.cookie.secure:false}")
+	private val cookieSecure: Boolean,
+
+	@Value($$"${jwt.cookie.same-site:Lax}")
+	private val cookieSameSite: String
+) : JwtCookieService {
+
+	override fun generateRefreshCookie(token: String): ResponseCookie {
+		return buildCookie(token, Duration.ofDays(30))
+	}
+
+	private fun buildCookie(value: String, maxAge: Duration): ResponseCookie {
+		return ResponseCookie.from(cookieName, value)
+			.httpOnly(true)
+			.secure(cookieSecure)
+			.sameSite(cookieSameSite)
+			.path(Constants.REFRESH_PATH)
+			.maxAge(maxAge)
+			.build()
 	}
 
 	override fun generateCleanCookie(): ResponseCookie {
 		return ResponseCookie.from(cookieName, "")
+			.httpOnly(true)
+			.secure(cookieSecure)
+			.sameSite(cookieSameSite)
 			.path(Constants.REFRESH_PATH)
+			.maxAge(Duration.ZERO)
 			.build()
 	}
 

@@ -7,11 +7,15 @@ import com.devgate.auth.dto.toAuthenticatedResponse
 import com.devgate.auth.dto.toRefreshResponse
 import com.devgate.auth.services.AuthService
 import com.devgate.users.dto.UserDto
+import com.devgate.users.models.User
+import com.devgate.users.services.UserService
+import com.devgate.utils.extensions.response_entity.withCookies
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,13 +26,16 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
 	@Autowired
 	private val authService: AuthService,
+
+	@Autowired
+	private val userService: UserService,
 ) {
 	@PostMapping("login")
 	fun login(@RequestBody @Valid request: LoginRequest): ResponseEntity<AuthenticatedResponse> {
 		val response = authService.login(request)
 
 		return ResponseEntity.ok()
-			.header(HttpHeaders.SET_COOKIE, response.cookie.toString())
+			.withCookies(response.cookie)
 			.body(response.toAuthenticatedResponse())
 	}
 
@@ -36,11 +43,11 @@ class AuthController(
 	fun register(
 		@RequestBody @Valid request: UserDto,
 	): ResponseEntity<AuthenticatedResponse> {
-		val registerResponse = authService.register(request)
+		val response = authService.register(request)
 
 		return ResponseEntity.ok()
-			.header(HttpHeaders.SET_COOKIE, registerResponse.cookie.toString())
-			.body(registerResponse.toAuthenticatedResponse())
+			.withCookies(response.cookie)
+			.body(response.toAuthenticatedResponse())
 	}
 
 	@PostMapping("logout")
@@ -59,5 +66,10 @@ class AuthController(
 		return ResponseEntity.ok()
 			.header(HttpHeaders.SET_COOKIE, response.cookie.toString())
 			.body(response.toRefreshResponse())
+	}
+
+	@GetMapping("me")
+	fun me(): ResponseEntity<User> {
+		return ResponseEntity.ok(userService.getCurrentUser())
 	}
 }

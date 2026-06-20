@@ -7,12 +7,14 @@ import org.springframework.http.ResponseCookie
 data class AuthenticatedDto(
 	override var user: User,
 	override var accessToken: String,
-	var cookie: ResponseCookie
+	var refreshToken: String,
+	var cookie: Map<String, ResponseCookie>
 ) : AuthPayload
 
 fun AuthenticatedDto.toAuthenticatedResponse(): AuthenticatedResponse {
 	return AuthenticatedResponse(
 		user = this.user,
 		accessToken = this.accessToken,
+		refreshToken = this.refreshToken,
 	)
 }

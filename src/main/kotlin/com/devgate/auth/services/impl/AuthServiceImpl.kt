@@ -43,7 +43,7 @@ class AuthServiceImpl(
 		}
 
 		val tokenPair = tokenManager.generateTokenPair(user)
-		val cookie = jwtCookieService.generateCookie(tokenPair.refreshToken)
+		val refreshCookie = jwtCookieService.generateRefreshCookie(tokenPair.refreshToken)
 
 		logger.info("AuthService[getAuthenticatedResponse]: user ${user.email} was successfully authenticated")
 
@@ -53,7 +53,8 @@ class AuthServiceImpl(
 		return AuthenticatedDto(
 			user = user,
 			accessToken = tokenPair.accessToken,
-			cookie = cookie
+			refreshToken = tokenPair.refreshToken,
+			cookie = mapOf("refresh" to refreshCookie)
 		)
 	}
 
@@ -75,7 +76,11 @@ class AuthServiceImpl(
 		val clearedCookie = jwtCookieService.generateCleanCookie()
 		val refreshToken: String? = jwtCookieService.getRefreshTokenFromCookie(request)
 
-		tokenManager.removeRefreshToken(refreshToken)
+		try {
+			tokenManager.removeRefreshToken(refreshToken)
+		} catch (e: ResponseStatusException) {
+			logger.info("AuthService[logout]: refresh token already absent (${e.reason})")
+		}
 
 		return clearedCookie
 	}
@@ -95,11 +100,12 @@ class AuthServiceImpl(
 			userRepository.findByEmail(email) ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found")
 
 		val tokenPair = tokenManager.refreshToken(user, refreshToken)
-		val cookie = jwtCookieService.generateCookie(tokenPair.refreshToken)
+		val refreshCookie = jwtCookieService.generateRefreshCookie(tokenPair.refreshToken)
 
 		return RefreshDto(
 			accessToken = tokenPair.accessToken,
-			cookie = cookie
+			refreshToken = tokenPair.refreshToken,
+			cookie = refreshCookie
 		)
 	}
 }

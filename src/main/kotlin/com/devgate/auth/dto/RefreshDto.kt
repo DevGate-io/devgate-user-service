@@ -5,8 +5,12 @@ import org.springframework.http.ResponseCookie
 
 data class RefreshDto(
 	val accessToken: String,
+	val refreshToken: String,
 	val cookie: ResponseCookie
 )
 
 fun RefreshDto.toRefreshResponse(): RefreshResponse =
-	RefreshResponse(accessToken = this.accessToken)
+	RefreshResponse(
+		accessToken = this.accessToken,
+		refreshToken = this.refreshToken,
+	)

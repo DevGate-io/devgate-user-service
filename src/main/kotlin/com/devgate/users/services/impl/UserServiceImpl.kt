@@ -5,6 +5,7 @@ import com.devgate.exceptions.UserNotFoundException
 import com.devgate.users.dto.UserDto
 import com.devgate.users.dto.toUser
 import com.devgate.users.models.User
+import com.devgate.users.models.enums.Role
 import com.devgate.users.repositories.UserRepository
 import com.devgate.users.services.UserService
 import com.devgate.utils.PasswordEncoder
@@ -39,8 +40,22 @@ class UserServiceImpl(
 		return userRepository.save(user)
 	}
 
-	override fun getAllUsers(): List<User> {
-		return userRepository.findAll()
+	override fun getAllUsers(search: String?): List<User> {
+		val all = userRepository.findAll()
+		val query = search?.trim()?.lowercase().orEmpty()
+
+		if (query.isEmpty()) return all
+
+		return all.filter { user ->
+			user.fullName.lowercase().contains(query) ||
+				user.email.lowercase().contains(query)
+		}
+	}
+
+	override fun updateUserRole(id: UUID, role: Role): User {
+		val user = userRepository.findById(id).orElseThrow { UserNotFoundException() }
+		user.role = role
+		return userRepository.save(user)
 	}
 
 	override fun getUserById(id: UUID?): User {

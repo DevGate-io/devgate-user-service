@@ -38,6 +38,9 @@ class User(
 	var role: Role = Role.MEMBER,
 
 	@Email
+	@NotBlank
+	@NotNull
+	@Column(nullable = false, unique = true)
 	val email: String,
 
 	@NotNull

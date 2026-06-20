@@ -1,5 +1,6 @@
 package com.devgate.users.controllers
 
+import com.devgate.users.dto.UpdateUserRoleRequest
 import com.devgate.users.dto.UserDto
 import com.devgate.users.models.User
 import com.devgate.users.services.UserService
@@ -21,8 +22,8 @@ class UserController(
 	private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
 	@GetMapping
-	fun getAll(): ResponseEntity<List<User>> {
-		return ResponseEntity.ok(userService.getAllUsers())
+	fun getAll(@RequestParam(required = false) search: String?): ResponseEntity<List<User>> {
+		return ResponseEntity.ok(userService.getAllUsers(search))
 	}
 
 	@GetMapping("/{id}")
@@ -50,13 +51,30 @@ class UserController(
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	fun createUser(@RequestBody @Valid body: UserDto): ResponseEntity<User> {
 		return ResponseEntity.ok(userService.createUser(body))
 	}
 
 	@PutMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	fun updateUser(@RequestBody @Valid body: UserDto): ResponseEntity<User> {
 		return ResponseEntity.ok(userService.updateUser(body))
+	}
+
+	@PatchMapping("/{id}/role")
+	@PreAuthorize("hasRole('ADMIN')")
+	fun updateUserRole(
+		@PathVariable id: String,
+		@RequestBody @Valid body: UpdateUserRoleRequest
+	): ResponseEntity<User> {
+		try {
+			val updated = userService.updateUserRole(UUID.fromString(id), body.role)
+			return ResponseEntity.ok(updated)
+		} catch (e: IllegalArgumentException) {
+			logger.error(e.message)
+			return ResponseEntity.badRequest().build()
+		}
 	}
 
 	@GetMapping("/current")

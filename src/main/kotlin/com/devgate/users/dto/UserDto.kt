@@ -15,6 +15,8 @@ data class UserDto(
 	var role: Role = Role.MEMBER,
 
 	@Email
+	@NotBlank
+	@NotNull
 	override var email: String,
 
 	@NotNull

@@ -1,0 +1,23 @@
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+# Style is enforced by ktlint (per .editorconfig); detekt focuses on static analysis.
+# Built upon detekt's default config (buildUponDefaultConfig = true) — only overrides below.
+style:
+  MaxLineLength:
+    maxLineLength: 120
+  ReturnCount:
+    active: true
+    max: 3
+
+complexity:
+  LongMethod:
+    active: true
+  TooManyFunctions:
+    active: true
+    thresholdInClasses: 15

@@ -45,3 +45,9 @@ logs/
 
 ### Environment ###
 .env
+
+### Claude Code ###
+.claude/settings.local.json
+.claude/logs/*
+!.claude/logs/.gitkeep
+.claude/hooks/__pycache__/

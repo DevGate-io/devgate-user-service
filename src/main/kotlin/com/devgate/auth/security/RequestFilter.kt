@@ -34,7 +34,7 @@ class RequestFilter(
 
 		if (header.startsWith(Constants.AUTH_PREFIX) && tokenGenerator.validateAccessToken(token)) {
 			val email = tokenGenerator.getUsernameFromToken(token) ?: throw UserNotFoundException()
-			val user = userDetailsService.loadUserByUsername(email) ?: throw UserNotFoundException()
+			val user = userDetailsService.loadUserByUsername(email)
 
 			val authToken = UsernamePasswordAuthenticationToken(user.username, null, user.authorities)
 			val securityContext = SecurityContextHolder.getContext()

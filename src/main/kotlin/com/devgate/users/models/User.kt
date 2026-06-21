@@ -41,7 +41,7 @@ class User(
 	@NotBlank
 	@NotNull
 	@Column(nullable = false, unique = true)
-	val email: String,
+	var email: String,
 
 	@NotNull
 	@NotBlank

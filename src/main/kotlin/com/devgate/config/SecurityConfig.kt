@@ -56,6 +56,14 @@ class SecurityConfig(
 					"/auth/refresh",
 					"/auth/logout"
 				).permitAll()
+				it.requestMatchers(
+					"/swagger-ui.html",
+					"/swagger-ui/**",
+					"/v3/api-docs",
+					"/v3/api-docs/**",
+					"/v3/api-docs.yaml",
+					"/error"
+				).permitAll()
 				it.anyRequest().authenticated()
 			}
 
@@ -63,15 +71,13 @@ class SecurityConfig(
 	}
 
 	fun corsConfiguration(): CorsConfiguration {
-		val corsConfiguration = CorsConfiguration()
-
-		corsConfiguration.allowedOrigins = allowedOrigins
-		corsConfiguration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-		corsConfiguration.allowedHeaders = listOf("*")
-		corsConfiguration.exposedHeaders = listOf("Set-Cookie")
-		corsConfiguration.allowCredentials = true
-		corsConfiguration.maxAge = 3600L
-
-		return corsConfiguration
+		return CorsConfiguration().apply {
+			allowedOrigins = this@SecurityConfig.allowedOrigins
+			allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+			allowedHeaders = listOf("*")
+			exposedHeaders = listOf("Set-Cookie")
+			allowCredentials = true
+			maxAge = 3600L
+		}
 	}
 }

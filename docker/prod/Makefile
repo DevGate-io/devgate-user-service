@@ -9,3 +9,6 @@ start: down
 
 down:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down
+
+seed:
+	./seed-admin.sh

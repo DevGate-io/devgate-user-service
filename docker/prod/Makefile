@@ -1,7 +1,7 @@
 DOCKER_COMPOSE = docker compose
 COMPOSE_FILE = ./compose.yaml
 
-up: down
+up: down build-app
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up --build -d
 
 start: down
@@ -9,6 +9,9 @@ start: down
 
 down:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down
+
+build-app:
+	cd ../.. && ./gradlew bootJar
 
 seed:
 	./seed-admin.sh

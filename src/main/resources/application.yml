@@ -4,7 +4,7 @@ spring:
 
   docker:
     compose:
-      file: docker/dev/compose.yaml
+      enabled: false
   jpa:
     hibernate:
       ddl-auto: validate

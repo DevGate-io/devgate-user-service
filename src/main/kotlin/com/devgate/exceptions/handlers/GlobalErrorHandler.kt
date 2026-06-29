@@ -3,9 +3,11 @@ package com.devgate.exceptions.handlers
 import com.devgate.exceptions.ApiException
 import com.devgate.utils.ApiError
 import com.devgate.utils.ApiErrorParser
+import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.client.HttpClientErrorException
@@ -13,6 +15,16 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestControllerAdvice
 class GlobalErrorHandler {
+	@ExceptionHandler(ExpiredJwtException::class)
+	fun handleExpiredJwtException(exception: ExpiredJwtException): ProblemDetail {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
+	}
+
+	 @ExceptionHandler(AuthorizationDeniedException::class)
+	 fun handleAuthorizationDeniedException(exception: AuthorizationDeniedException): ProblemDetail {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
+	 }
+
 	@ExceptionHandler(ApiException::class)
 	fun handleUserNotFoundException(exception: ApiException): ProblemDetail {
 		return ProblemDetail.forStatusAndDetail(exception.httpStatus, exception.message)

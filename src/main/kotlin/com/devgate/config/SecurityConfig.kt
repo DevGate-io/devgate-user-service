@@ -1,8 +1,8 @@
 package com.devgate.config
 
+import com.devgate.auth.security.JwtAuthenticationEntryPoint
 import com.devgate.auth.security.RequestFilter
 import com.devgate.utils.PasswordEncoder
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -25,9 +25,7 @@ class SecurityConfig(
 	private val requestFilter: RequestFilter,
 	private val passwordEncoder: PasswordEncoder,
 	private val userDetailsService: UserDetailsService,
-
-	@Value($$"${cors.allowed-origins:http://localhost:3000}")
-	private val allowedOrigins: List<String>,
+	private val authenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
 
 	@Bean
@@ -49,6 +47,7 @@ class SecurityConfig(
 			.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
 			.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter::class.java)
 			.authenticationProvider(authenticationProvider())
+			.exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint) }
 			.authorizeHttpRequests {
 				it.requestMatchers(
 					"/auth/login",

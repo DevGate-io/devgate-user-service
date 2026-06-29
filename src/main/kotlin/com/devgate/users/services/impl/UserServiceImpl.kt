@@ -18,11 +18,8 @@ import java.time.Instant
 import java.util.*
 
 @Service
-class UserServiceImpl(
-	@Autowired
+class UserServiceImpl @Autowired constructor(
 	private val userRepository: UserRepository,
-
-	@Autowired
 	private val passwordEncoder: PasswordEncoder
 ) : UserService {
 

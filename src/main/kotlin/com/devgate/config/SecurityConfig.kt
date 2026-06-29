@@ -72,7 +72,6 @@ class SecurityConfig(
 
 	fun corsConfiguration(): CorsConfiguration {
 		return CorsConfiguration().apply {
-			allowedOrigins = this@SecurityConfig.allowedOrigins
 			allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 			allowedHeaders = listOf("*")
 			exposedHeaders = listOf("Set-Cookie")

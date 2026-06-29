@@ -15,8 +15,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/users")
-class UserController(
-	@Autowired
+class UserController @Autowired constructor(
 	private val userService: UserService
 ) {
 	private val logger: Logger = LoggerFactory.getLogger(this::class.java)

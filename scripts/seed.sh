@@ -31,6 +31,17 @@ if ! python3 -c "import bcrypt" 2>/dev/null; then
 	exit 1
 fi
 
+psql -Atc "
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    last_login DATETIME,
+    role VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    hashed_password VARCHAR(255) NOT NULL
+);
+" > /dev/null
+
 EXISTING=$(psql -Atc "SELECT COUNT(*) FROM users;" 2>/dev/null || echo "0")
 if [ "$EXISTING" -gt 0 ]; then
 	echo "Database already has $EXISTING user(s), skipping seed."
@@ -46,15 +57,15 @@ hash_password() {
 hash_password "$PASSWORD" > /dev/null
 
 USERS=(
-	"Admin User ADMIN admin@devgate.io"
-	"Manager User MANAGER manager@devgate.io"
-	"DevOps User DEVOPS devops@devgate.io"
-	"QA User QA qa@devgate.io"
-	"Member User MEMBER member@devgate.io"
+	"admin@devgate.io|ADMIN|Admin User"
+	"manager@devgate.io|MANAGER|Manager User"
+	"devops@devgate.io|DEVOPS|DevOps User"
+	"qa@devgate.io|QA|QA User"
+	"member@devgate.io|MEMBER|Member User"
 )
 
 for entry in "${USERS[@]}"; do
-	read -r name role email <<< "$entry"
+	IFS="|" read -r email role name <<< "$entry"
 	pw_hash=$(hash_password "$PASSWORD")
 	psql -Atc "INSERT INTO users (id, full_name, role, email, hashed_password) VALUES (gen_random_uuid(), '$name', '$role', '$email', '$pw_hash');"
 	echo "  + $name ($role) <$email>"

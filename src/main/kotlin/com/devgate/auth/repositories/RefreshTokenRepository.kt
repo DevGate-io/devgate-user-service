@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface RefreshTokenRepository :
-	JpaRepository<RefreshToken, UUID> {
+interface RefreshTokenRepository : JpaRepository<RefreshToken, UUID> {
 	@Query(
 		"""
 			DELETE FROM RefreshToken rt
@@ -18,7 +17,10 @@ interface RefreshTokenRepository :
 		"""
 	)
 	@Modifying
-	fun deleteByUserIdAndHashedToken(userId: UUID?, hashedToken: String)
+	fun deleteByUserIdAndHashedToken(
+		userId: UUID?,
+		hashedToken: String
+	)
 
 	@Query(
 		"""
@@ -27,7 +29,12 @@ interface RefreshTokenRepository :
 			AND rt.hashedToken = :hashedToken
 		"""
 	)
-	fun findByUserIdAndHashedToken(userId: UUID?, hashedToken: String): RefreshToken?
+	fun findByUserIdAndHashedToken(
+		userId: UUID?,
+		hashedToken: String
+	): RefreshToken?
+
 	fun findByHashedToken(hashedToken: String): RefreshToken?
+
 	fun removeRefreshTokenByHashedToken(hashedToken: String)
 }

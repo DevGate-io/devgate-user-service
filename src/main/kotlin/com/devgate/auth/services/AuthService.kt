@@ -9,7 +9,10 @@ import org.springframework.http.ResponseCookie
 
 interface AuthService {
 	fun register(request: UserDto): AuthenticatedDto
+
 	fun login(request: LoginRequest): AuthenticatedDto
+
 	fun logout(request: HttpServletRequest): ResponseCookie
+
 	fun refresh(request: HttpServletRequest): RefreshDto
 }

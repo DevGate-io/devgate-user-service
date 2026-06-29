@@ -23,29 +23,30 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/auth")
-class AuthController(
-	@Autowired
+class AuthController @Autowired constructor(
 	private val authService: AuthService,
-
-	@Autowired
-	private val userService: UserService,
+	private val userService: UserService
 ) {
 	@PostMapping("login")
-	fun login(@RequestBody @Valid request: LoginRequest): ResponseEntity<AuthenticatedResponse> {
+	fun login(
+		@RequestBody @Valid request: LoginRequest
+	): ResponseEntity<AuthenticatedResponse> {
 		val response = authService.login(request)
 
-		return ResponseEntity.ok()
+		return ResponseEntity
+			.ok()
 			.withCookies(response.cookie)
 			.body(response.toAuthenticatedResponse())
 	}
 
 	@PostMapping("register")
 	fun register(
-		@RequestBody @Valid request: UserDto,
+		@RequestBody @Valid request: UserDto
 	): ResponseEntity<AuthenticatedResponse> {
 		val response = authService.register(request)
 
-		return ResponseEntity.ok()
+		return ResponseEntity
+			.ok()
 			.withCookies(response.cookie)
 			.body(response.toAuthenticatedResponse())
 	}
@@ -54,7 +55,8 @@ class AuthController(
 	fun logout(request: HttpServletRequest): ResponseEntity<Void> {
 		val cookie = authService.logout(request)
 
-		return ResponseEntity.noContent()
+		return ResponseEntity
+			.noContent()
 			.header(HttpHeaders.SET_COOKIE, cookie.toString())
 			.build()
 	}
@@ -63,13 +65,12 @@ class AuthController(
 	fun refresh(request: HttpServletRequest): ResponseEntity<RefreshResponse> {
 		val response = authService.refresh(request)
 
-		return ResponseEntity.ok()
+		return ResponseEntity
+			.ok()
 			.header(HttpHeaders.SET_COOKIE, response.cookie.toString())
 			.body(response.toRefreshResponse())
 	}
 
 	@GetMapping("me")
-	fun me(): ResponseEntity<User> {
-		return ResponseEntity.ok(userService.getCurrentUser())
-	}
+	fun me(): ResponseEntity<User> = ResponseEntity.ok(userService.getCurrentUser())
 }

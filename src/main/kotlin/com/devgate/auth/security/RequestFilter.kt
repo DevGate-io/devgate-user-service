@@ -36,11 +36,14 @@ class RequestFilter(
 		filterChain.doFilter(request, response)
 	}
 
-	private fun authenticate(header: String, request: HttpServletRequest) {
+	private fun authenticate(
+		header: String,
+		request: HttpServletRequest
+	) {
 		val token = header.replace(Constants.AUTH_PREFIX, "")
 
 		if (header.startsWith(Constants.AUTH_PREFIX)) {
-			if (!tokenGenerator.validateAccessToken(token)){
+			if (!tokenGenerator.validateAccessToken(token)) {
 				throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
 			}
 

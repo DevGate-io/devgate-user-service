@@ -23,32 +23,28 @@ class User(
 	@GeneratedValue
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	var id: UUID? = null,
-
 	@Column(name = "full_name")
 	@NotBlank
 	@NotNull
 	var fullName: String,
-
 	@Column(name = "last_login")
 	@JsonSerialize(using = InstantSerializer::class)
 	var lastLogin: Instant? = null,
-
 	@Enumerated(EnumType.STRING)
 	@NotNull
 	var role: Role = Role.MEMBER,
-
 	@Email
 	@NotBlank
 	@NotNull
 	@Column(nullable = false, unique = true)
 	var email: String,
-
 	@NotNull
 	@NotBlank
 	@Size(min = 8)
 	@Column("hashed_password")
-	var hashedPassword: String,
-) : UserDetails, Serializable {
+	var hashedPassword: String
+) : UserDetails,
+	Serializable {
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
 		if (javaClass != other?.javaClass) return false
@@ -75,9 +71,8 @@ class User(
 		return result
 	}
 
-	override fun toString(): String {
-		return "User(id=$id, fullName='$fullName', lastLogin=$lastLogin, role=$role, email='$email', hashedPassword='$hashedPassword')"
-	}
+	override fun toString(): String =
+		"User(id=$id, fullName='$fullName', lastLogin=$lastLogin, role=$role, email='$email', hashedPassword='$hashedPassword')"
 
 	override fun getAuthorities(): Collection<GrantedAuthority> = listOf(this.role)
 
@@ -95,8 +90,8 @@ fun User.copy(
 	role: Role = this.role,
 	email: String = this.email,
 	hashedPassword: String = this.hashedPassword
-): User {
-	return User(
+): User =
+	User(
 		id = id,
 		fullName = fullName,
 		lastLogin = lastLogin,
@@ -104,4 +99,3 @@ fun User.copy(
 		email = email,
 		hashedPassword = hashedPassword
 	)
-}

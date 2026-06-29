@@ -30,21 +30,23 @@ import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class UserServiceTest {
-	private val userDto = UserDto(
-		fullName = "Fake User 1",
-		email = "test@test.com",
-		role = Role.MEMBER,
-		password = "this is password",
-	)
+	private val userDto =
+		UserDto(
+			fullName = "Fake User 1",
+			email = "test@test.com",
+			role = Role.MEMBER,
+			password = "this is password"
+		)
 
-	private val fakeUser = User(
-		id = UUID.randomUUID(),
-		fullName = "Fake User 1",
-		email = "test@test.com",
-		role = Role.MEMBER,
-		lastLogin = Instant.now(),
-		hashedPassword = "this is hashed password",
-	)
+	private val fakeUser =
+		User(
+			id = UUID.randomUUID(),
+			fullName = "Fake User 1",
+			email = "test@test.com",
+			role = Role.MEMBER,
+			lastLogin = Instant.now(),
+			hashedPassword = "this is hashed password"
+		)
 
 	@Mock
 	private lateinit var userRepository: UserRepository
@@ -105,7 +107,6 @@ internal class UserServiceTest {
 		}
 	}
 
-
 	@Test
 	fun `deleteUserById - positive case`() {
 		val userId = UUID.randomUUID()
@@ -150,7 +151,6 @@ internal class UserServiceTest {
 	fun `createUser - already exists`() {
 		`when`(userRepository.existsByEmail(userDto.email)).thenReturn(true)
 
-
 		assertThrows(UserAlreadyExistsException::class.java) {
 			userService.createUser(userDto)
 		}
@@ -161,9 +161,12 @@ internal class UserServiceTest {
 	fun `getCurrentUser - positive`() {
 		`when`(userRepository.findByEmail(fakeUser.email)).thenReturn(fakeUser)
 
-		val authentication = UsernamePasswordAuthenticationToken(
-			fakeUser.email, null, fakeUser.authorities
-		)
+		val authentication =
+			UsernamePasswordAuthenticationToken(
+				fakeUser.email,
+				null,
+				fakeUser.authorities
+			)
 
 		SecurityContextHolder.getContext().authentication = authentication
 		val result = userService.getCurrentUser()
@@ -181,13 +184,14 @@ internal class UserServiceTest {
 
 	@Test
 	fun `getCurrentUser - not authenticated`() {
-		val authentication = UsernamePasswordAuthenticationToken(
-			"test@test.com",
-			null,
-			emptyList()
-		).apply {
-			isAuthenticated = false
-		}
+		val authentication =
+			UsernamePasswordAuthenticationToken(
+				"test@test.com",
+				null,
+				emptyList()
+			).apply {
+				isAuthenticated = false
+			}
 
 		SecurityContextHolder.getContext().authentication = authentication
 
@@ -200,9 +204,12 @@ internal class UserServiceTest {
 
 	@Test
 	fun `getCurrentUser - user not found`() {
-		val authentication = UsernamePasswordAuthenticationToken(
-			"test@test.com", null, emptyList()
-		)
+		val authentication =
+			UsernamePasswordAuthenticationToken(
+				"test@test.com",
+				null,
+				emptyList()
+			)
 
 		SecurityContextHolder.getContext().authentication = authentication
 		`when`(userRepository.findByEmail("test@test.com")).thenReturn(null)
@@ -213,7 +220,6 @@ internal class UserServiceTest {
 
 		SecurityContextHolder.clearContext()
 	}
-
 
 	@Test
 	fun `updateLastLogin - null id`() {
@@ -281,5 +287,4 @@ internal class UserServiceTest {
 			userService.updateUser(userDto)
 		}
 	}
-
 }

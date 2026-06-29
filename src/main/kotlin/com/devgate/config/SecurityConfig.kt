@@ -27,7 +27,6 @@ class SecurityConfig(
 	private val userDetailsService: UserDetailsService,
 	private val authenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
-
 	@Bean
 	fun authenticationProvider(): AuthenticationProvider {
 		val provider = DaoAuthenticationProvider(userDetailsService)
@@ -36,46 +35,47 @@ class SecurityConfig(
 	}
 
 	@Bean
-	fun authenticationManager(configuration: AuthenticationConfiguration): AuthenticationManager {
-		return configuration.authenticationManager
-	}
+	fun authenticationManager(configuration: AuthenticationConfiguration): AuthenticationManager =
+		configuration.authenticationManager
 
 	@Bean
 	fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-		http.cors { it.configurationSource { corsConfiguration() } }
+		http
+			.cors { it.configurationSource { corsConfiguration() } }
 			.csrf { it.disable() }
 			.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
 			.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter::class.java)
 			.authenticationProvider(authenticationProvider())
 			.exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint) }
 			.authorizeHttpRequests {
-				it.requestMatchers(
-					"/auth/login",
-					"/auth/register",
-					"/auth/refresh",
-					"/auth/logout"
-				).permitAll()
-				it.requestMatchers(
-					"/swagger-ui.html",
-					"/swagger-ui/**",
-					"/v3/api-docs",
-					"/v3/api-docs/**",
-					"/v3/api-docs.yaml",
-					"/error"
-				).permitAll()
+				it
+					.requestMatchers(
+						"/auth/login",
+						"/auth/register",
+						"/auth/refresh",
+						"/auth/logout"
+					).permitAll()
+				it
+					.requestMatchers(
+						"/swagger-ui.html",
+						"/swagger-ui/**",
+						"/v3/api-docs",
+						"/v3/api-docs/**",
+						"/v3/api-docs.yaml",
+						"/error"
+					).permitAll()
 				it.anyRequest().authenticated()
 			}
 
 		return http.build()
 	}
 
-	fun corsConfiguration(): CorsConfiguration {
-		return CorsConfiguration().apply {
+	fun corsConfiguration(): CorsConfiguration =
+		CorsConfiguration().apply {
 			allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 			allowedHeaders = listOf("*")
 			exposedHeaders = listOf("Set-Cookie")
 			allowCredentials = true
 			maxAge = 3600L
 		}
-	}
 }

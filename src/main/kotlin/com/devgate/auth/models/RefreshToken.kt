@@ -14,14 +14,11 @@ class RefreshToken(
 	@GeneratedValue
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	var id: UUID? = null,
-
 	@Column(name = "expires_at")
 	@NotNull
 	var expiresAt: Instant,
-
 	@Column(name = "token", unique = true)
 	var hashedToken: String,
-
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	var user: User

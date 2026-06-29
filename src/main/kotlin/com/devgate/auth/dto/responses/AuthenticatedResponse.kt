@@ -6,5 +6,5 @@ import com.devgate.users.models.User
 data class AuthenticatedResponse(
 	override var user: User,
 	override var accessToken: String,
-	val refreshToken: String,
+	val refreshToken: String
 ) : AuthPayload

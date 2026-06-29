@@ -12,5 +12,5 @@ data class RefreshDto(
 fun RefreshDto.toRefreshResponse(): RefreshResponse =
 	RefreshResponse(
 		accessToken = this.accessToken,
-		refreshToken = this.refreshToken,
+		refreshToken = this.refreshToken
 	)

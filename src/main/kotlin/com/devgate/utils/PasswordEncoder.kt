@@ -10,6 +10,8 @@ class PasswordEncoder : IPasswordEncoder {
 
 	override fun encode(raw: CharSequence?): String? = bcrypt.encode(raw)
 
-	override fun matches(rawPassword: CharSequence?, encodedPassword: String?): Boolean =
-		bcrypt.matches(rawPassword, encodedPassword)
+	override fun matches(
+		rawPassword: CharSequence?,
+		encodedPassword: String?
+	): Boolean = bcrypt.matches(rawPassword, encodedPassword)
 }

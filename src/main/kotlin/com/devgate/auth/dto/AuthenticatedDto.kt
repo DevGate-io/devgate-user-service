@@ -11,10 +11,9 @@ data class AuthenticatedDto(
 	var cookie: Map<String, ResponseCookie>
 ) : AuthPayload
 
-fun AuthenticatedDto.toAuthenticatedResponse(): AuthenticatedResponse {
-	return AuthenticatedResponse(
+fun AuthenticatedDto.toAuthenticatedResponse(): AuthenticatedResponse =
+	AuthenticatedResponse(
 		user = this.user,
 		accessToken = this.accessToken,
-		refreshToken = this.refreshToken,
+		refreshToken = this.refreshToken
 	)
-}

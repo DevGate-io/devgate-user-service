@@ -10,7 +10,6 @@ data class LoginRequest(
 	@NotBlank
 	@NotNull
 	override var email: String,
-
 	@NotBlank
 	@NotNull
 	override var password: String

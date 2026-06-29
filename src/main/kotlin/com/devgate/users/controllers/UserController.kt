@@ -15,69 +15,73 @@ import java.util.*
 
 @RestController
 @RequestMapping("/users")
-class UserController @Autowired constructor(
-	private val userService: UserService
-) {
-	private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+class UserController
+	@Autowired
+	constructor(
+		private val userService: UserService
+	) {
+		private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-	@GetMapping
-	fun getAll(@RequestParam(required = false) search: String?): ResponseEntity<List<User>> {
-		return ResponseEntity.ok(userService.getAllUsers(search))
-	}
+		@GetMapping
+		fun getAll(
+			@RequestParam(required = false) search: String?
+		): ResponseEntity<List<User>> = ResponseEntity.ok(userService.getAllUsers(search))
 
-	@GetMapping("/{id}")
-	fun getUserById(@PathVariable id: String): ResponseEntity<User> {
-		try {
-			val user = userService.getUserById(UUID.fromString(id))
-			return ResponseEntity.ok(user)
-		} catch (e: IllegalArgumentException) {
-			logger.error(e.message)
-			return ResponseEntity.badRequest().build()
+		@GetMapping("/{id}")
+		fun getUserById(
+			@PathVariable id: String
+		): ResponseEntity<User> {
+			try {
+				val user = userService.getUserById(UUID.fromString(id))
+				return ResponseEntity.ok(user)
+			} catch (e: IllegalArgumentException) {
+				logger.error(e.message)
+				return ResponseEntity.badRequest().build()
+			}
 		}
-	}
 
-	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
-	fun deleteUserById(@PathVariable id: String): ResponseEntity<Nothing> {
-		try {
-			userService.deleteUserById(UUID.fromString(id))
+		@DeleteMapping("/{id}")
+		@PreAuthorize("hasRole('ADMIN')")
+		fun deleteUserById(
+			@PathVariable id: String
+		): ResponseEntity<Nothing> {
+			try {
+				userService.deleteUserById(UUID.fromString(id))
 
-			return ResponseEntity.ok().build()
-		} catch (e: IllegalArgumentException) {
-			logger.error(e.message)
-			return ResponseEntity.badRequest().build()
+				return ResponseEntity.ok().build()
+			} catch (e: IllegalArgumentException) {
+				logger.error(e.message)
+				return ResponseEntity.badRequest().build()
+			}
 		}
-	}
 
-	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
-	fun createUser(@RequestBody @Valid body: UserDto): ResponseEntity<User> {
-		return ResponseEntity.ok(userService.createUser(body))
-	}
+		@PostMapping
+		@PreAuthorize("hasRole('ADMIN')")
+		fun createUser(
+			@RequestBody @Valid body: UserDto
+		): ResponseEntity<User> = ResponseEntity.ok(userService.createUser(body))
 
-	@PutMapping
-	@PreAuthorize("hasRole('ADMIN')")
-	fun updateUser(@RequestBody @Valid body: UserDto): ResponseEntity<User> {
-		return ResponseEntity.ok(userService.updateUser(body))
-	}
+		@PutMapping
+		@PreAuthorize("hasRole('ADMIN')")
+		fun updateUser(
+			@RequestBody @Valid body: UserDto
+		): ResponseEntity<User> = ResponseEntity.ok(userService.updateUser(body))
 
-	@PatchMapping("/{id}/role")
-	@PreAuthorize("hasRole('ADMIN')")
-	fun updateUserRole(
-		@PathVariable id: String,
-		@RequestBody @Valid body: UpdateUserRoleRequest
-	): ResponseEntity<User> {
-		try {
-			val updated = userService.updateUserRole(UUID.fromString(id), body.role)
-			return ResponseEntity.ok(updated)
-		} catch (e: IllegalArgumentException) {
-			logger.error(e.message)
-			return ResponseEntity.badRequest().build()
+		@PatchMapping("/{id}/role")
+		@PreAuthorize("hasRole('ADMIN')")
+		fun updateUserRole(
+			@PathVariable id: String,
+			@RequestBody @Valid body: UpdateUserRoleRequest
+		): ResponseEntity<User> {
+			try {
+				val updated = userService.updateUserRole(UUID.fromString(id), body.role)
+				return ResponseEntity.ok(updated)
+			} catch (e: IllegalArgumentException) {
+				logger.error(e.message)
+				return ResponseEntity.badRequest().build()
+			}
 		}
-	}
 
-	@GetMapping("/current")
-	fun getCurrentUser(): ResponseEntity<User> {
-		return ResponseEntity.ok(userService.getCurrentUser())
+		@GetMapping("/current")
+		fun getCurrentUser(): ResponseEntity<User> = ResponseEntity.ok(userService.getCurrentUser())
 	}
-}

@@ -4,6 +4,7 @@ import com.devgate.exceptions.ApiException
 import com.devgate.utils.ApiError
 import com.devgate.utils.ApiErrorParser
 import io.jsonwebtoken.ExpiredJwtException
+import org.apache.tomcat.websocket.AuthenticationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -15,25 +16,25 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestControllerAdvice
 class GlobalErrorHandler {
-	@ExceptionHandler(ExpiredJwtException::class)
-	fun handleExpiredJwtException(exception: ExpiredJwtException): ProblemDetail {
-		return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
-	}
+	@ExceptionHandler(AuthenticationException::class)
+	fun handleAuthenticationException(exception: AuthenticationException): ProblemDetail =
+		ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
 
-	 @ExceptionHandler(AuthorizationDeniedException::class)
-	 fun handleAuthorizationDeniedException(exception: AuthorizationDeniedException): ProblemDetail {
-		return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
-	 }
+	@ExceptionHandler(ExpiredJwtException::class)
+	fun handleExpiredJwtException(exception: ExpiredJwtException): ProblemDetail =
+		ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
+
+	@ExceptionHandler(AuthorizationDeniedException::class)
+	fun handleAuthorizationDeniedException(exception: AuthorizationDeniedException): ProblemDetail =
+		ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
 
 	@ExceptionHandler(ApiException::class)
-	fun handleUserNotFoundException(exception: ApiException): ProblemDetail {
-		return ProblemDetail.forStatusAndDetail(exception.httpStatus, exception.message)
-	}
+	fun handleUserNotFoundException(exception: ApiException): ProblemDetail =
+		ProblemDetail.forStatusAndDetail(exception.httpStatus, exception.message)
 
 	@ExceptionHandler(ResponseStatusException::class)
-	fun handleException(exception: ResponseStatusException): ProblemDetail {
-		return ProblemDetail.forStatusAndDetail(exception.statusCode, exception.reason)
-	}
+	fun handleException(exception: ResponseStatusException): ProblemDetail =
+		ProblemDetail.forStatusAndDetail(exception.statusCode, exception.reason)
 
 	@ExceptionHandler(HttpClientErrorException::class)
 	fun handleException(exception: HttpClientErrorException): ProblemDetail {
@@ -47,10 +48,9 @@ class GlobalErrorHandler {
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException::class)
-	fun handleException(exception: HttpMessageNotReadableException): ProblemDetail {
-		return ProblemDetail.forStatusAndDetail(
+	fun handleException(exception: HttpMessageNotReadableException): ProblemDetail =
+		ProblemDetail.forStatusAndDetail(
 			HttpStatus.UNPROCESSABLE_ENTITY,
 			exception.message
 		)
-	}
 }

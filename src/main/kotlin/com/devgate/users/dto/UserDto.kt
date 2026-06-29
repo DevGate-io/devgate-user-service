@@ -13,21 +13,20 @@ data class UserDto(
 	@NotNull
 	var fullName: String,
 	var role: Role = Role.MEMBER,
-
 	@Email
 	@NotBlank
 	@NotNull
 	override var email: String,
-
 	@NotNull
 	@NotBlank
 	@Size(min = 8)
 	override var password: String
 ) : Principal
 
-fun UserDto.toUser(): User = User(
-	fullName = this.fullName,
-	role = this.role,
-	email = this.email,
-	hashedPassword = this.password
-)
+fun UserDto.toUser(): User =
+	User(
+		fullName = this.fullName,
+		role = this.role,
+		email = this.email,
+		hashedPassword = this.password
+	)

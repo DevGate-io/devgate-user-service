@@ -39,7 +39,8 @@ class TokenGenerator(
 		val now = Date()
 		val expiryDate = Instant.now().plusMillis(expiration)
 
-		return Jwts.builder()
+		return Jwts
+			.builder()
 			.subject(details.username)
 			.claim("type", type.name)
 			.issuedAt(now)
@@ -48,30 +49,32 @@ class TokenGenerator(
 			.compact()
 	}
 
-	fun generateAccessToken(details: UserDetails): String {
-		return generateToken(
+	fun generateAccessToken(details: UserDetails): String =
+		generateToken(
 			details,
 			JwtType.ACCESS,
 			accessTokenExpirationInMs
 		)
-	}
 
-	fun generateRefreshToken(details: UserDetails): String {
-		return generateToken(
+	fun generateRefreshToken(details: UserDetails): String =
+		generateToken(
 			details,
 			JwtType.REFRESH,
 			refreshTokenExpirationInMs
 		)
-	}
 
-	private fun validateToken(token: String, type: JwtType): Boolean {
+	private fun validateToken(
+		token: String,
+		type: JwtType
+	): Boolean {
 		val claims = getClaims(token) ?: return false
 		val areTypesEqual = claims["type"] == type.name
 
 		logger.debug("TokenGenerator[validateToken]: are types equal -> $areTypesEqual")
 
 		try {
-			Jwts.parser()
+			Jwts
+				.parser()
 				.verifyWith(decodedJwtSecret)
 				.build()
 				.parseSignedClaims(token)
@@ -90,13 +93,10 @@ class TokenGenerator(
 		return areTypesEqual && claims.expiration.time > Date().time
 	}
 
-	fun validateAccessToken(token: String): Boolean {
-		return validateToken(token.replace(Constants.AUTH_PREFIX, ""), JwtType.ACCESS)
-	}
+	fun validateAccessToken(token: String): Boolean =
+		validateToken(token.replace(Constants.AUTH_PREFIX, ""), JwtType.ACCESS)
 
-	fun validateRefreshToken(token: String): Boolean {
-		return validateToken(token, JwtType.REFRESH)
-	}
+	fun validateRefreshToken(token: String): Boolean = validateToken(token, JwtType.REFRESH)
 
 	fun getUsernameFromToken(token: String): String? {
 		val claims: Claims = getClaims(token) ?: throw IllegalArgumentException("Invalid token")
@@ -108,7 +108,8 @@ class TokenGenerator(
 		val processedToken = token.replace(Constants.AUTH_PREFIX, "")
 
 		return try {
-			Jwts.parser()
+			Jwts
+				.parser()
 				.verifyWith(decodedJwtSecret)
 				.build()
 				.parseSignedClaims(processedToken)

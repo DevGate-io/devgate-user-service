@@ -10,17 +10,15 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class OpenApiConfig {
-
 	@Bean
-	fun openApi(): OpenAPI {
-		return OpenAPI()
+	fun openApi(): OpenAPI =
+		OpenAPI()
 			.info(
 				Info()
 					.title("DevGate User Service API")
 					.description("User management and authentication (JWT access token + refresh-token cookie)")
 					.version("1.0.0")
-			)
-			.components(
+			).components(
 				Components().addSecuritySchemes(
 					BEARER_SCHEME,
 					SecurityScheme()
@@ -28,9 +26,7 @@ class OpenApiConfig {
 						.scheme("bearer")
 						.bearerFormat("JWT")
 				)
-			)
-			.addSecurityItem(SecurityRequirement().addList(BEARER_SCHEME))
-	}
+			).addSecurityItem(SecurityRequirement().addList(BEARER_SCHEME))
 
 	private companion object {
 		const val BEARER_SCHEME = "bearer-jwt"

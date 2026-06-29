@@ -33,7 +33,10 @@ class AuthServiceImpl(
 ) : AuthService {
 	private val logger = LoggerFactory.getLogger(this::class.java)
 
-	private fun authenticate(user: User, rawPassword: CharSequence): AuthenticatedDto {
+	private fun authenticate(
+		user: User,
+		rawPassword: CharSequence
+	): AuthenticatedDto {
 		try {
 			val token = UsernamePasswordAuthenticationToken(user.email, rawPassword, user.authorities)
 			authenticationManager.authenticate(token)
@@ -64,10 +67,11 @@ class AuthServiceImpl(
 	}
 
 	override fun login(request: LoginRequest): AuthenticatedDto {
-		val user: User = userRepository.findByEmail(request.email) ?: throw ResponseStatusException(
-			HttpStatus.UNAUTHORIZED,
-			"Invalid email or password"
-		)
+		val user: User =
+			userRepository.findByEmail(request.email) ?: throw ResponseStatusException(
+				HttpStatus.UNAUTHORIZED,
+				"Invalid email or password"
+			)
 
 		return authenticate(user, request.password)
 	}
@@ -86,15 +90,17 @@ class AuthServiceImpl(
 	}
 
 	override fun refresh(request: HttpServletRequest): RefreshDto {
-		val refreshToken: String = jwtCookieService.getRefreshTokenFromCookie(request) ?: throw ResponseStatusException(
-			HttpStatus.UNAUTHORIZED,
-			"Refresh token not found"
-		)
+		val refreshToken: String =
+			jwtCookieService.getRefreshTokenFromCookie(request) ?: throw ResponseStatusException(
+				HttpStatus.UNAUTHORIZED,
+				"Refresh token not found"
+			)
 
-		val email = tokenGenerator.getUsernameFromToken(refreshToken) ?: throw ResponseStatusException(
-			HttpStatus.UNAUTHORIZED,
-			"Invalid token"
-		)
+		val email =
+			tokenGenerator.getUsernameFromToken(refreshToken) ?: throw ResponseStatusException(
+				HttpStatus.UNAUTHORIZED,
+				"Invalid token"
+			)
 
 		val user: User =
 			userRepository.findByEmail(email) ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found")

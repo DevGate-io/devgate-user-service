@@ -20,12 +20,14 @@ import java.util.*
 class TokenManagerImpl(
 	@Autowired
 	private val refreshTokenRepository: RefreshTokenRepository,
-
 	@Autowired
 	private val tokenGenerator: TokenGenerator
 ) : TokenManager {
 	@Transactional
-	override fun refreshToken(user: User, refreshToken: String): TokenPair {
+	override fun refreshToken(
+		user: User,
+		refreshToken: String
+	): TokenPair {
 		if (!tokenGenerator.validateRefreshToken(refreshToken)) {
 			throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token")
 		}
@@ -57,7 +59,10 @@ class TokenManagerImpl(
 	}
 
 	@Transactional
-	override fun removeRefreshToken(user: User, refreshToken: String) {
+	override fun removeRefreshToken(
+		user: User,
+		refreshToken: String
+	) {
 		val hashedToken = hashToken(refreshToken)
 
 		refreshTokenRepository.findByUserIdAndHashedToken(user.id, hashedToken)?.let { token ->
@@ -78,14 +83,17 @@ class TokenManagerImpl(
 		} ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found")
 	}
 
-	private fun saveRefreshToken(user: User, token: String) {
+	private fun saveRefreshToken(
+		user: User,
+		token: String
+	) {
 		val expiresAt = Instant.now().plusMillis(tokenGenerator.refreshTokenExpirationInMs)
 
 		refreshTokenRepository.save(
 			RefreshToken(
 				hashedToken = hashToken(token),
 				user = user,
-				expiresAt = expiresAt,
+				expiresAt = expiresAt
 			)
 		)
 	}

@@ -37,7 +37,7 @@ repositories {
 val mockitoAgent: Configuration = configurations.create("mockitoAgent")
 
 dependencies {
-//	starters
+// 	starters
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-liquibase")
@@ -59,13 +59,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("tools.jackson.module:jackson-module-kotlin")
 
-//	docker
+// 	docker
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
-//	database
+// 	database
 	runtimeOnly("org.postgresql:postgresql")
 
-//	migrations
+// 	migrations
 	implementation("org.liquibase:liquibase-core")
 	liquibaseRuntime("org.liquibase:liquibase-core:5.0")
 	liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.1.1")
@@ -74,7 +74,7 @@ dependencies {
 
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-//	test dependencies
+// 	test dependencies
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("com.h2database:h2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")

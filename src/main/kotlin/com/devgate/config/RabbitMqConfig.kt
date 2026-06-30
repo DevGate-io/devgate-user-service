@@ -1,6 +1,8 @@
 package com.devgate.config
 
 import org.springframework.amqp.core.Queue
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter
+import org.springframework.amqp.support.converter.MessageConverter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -13,4 +15,9 @@ class RabbitMqConfig @Autowired constructor(
 ) {
 	@Bean
 	fun auditQueue(): Queue = Queue(queueName)
+
+	@Bean
+		fun converter(): MessageConverter {
+		return JacksonJsonMessageConverter()
+	}
 }

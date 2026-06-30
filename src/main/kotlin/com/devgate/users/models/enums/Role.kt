@@ -5,11 +5,11 @@ import org.springframework.security.core.GrantedAuthority
 enum class Role(
 	private val roleName: String
 ) : GrantedAuthority {
-	MEMBER("member"),
-	ADMIN("admin"),
-	MANAGER("manager"),
-	DEVOPS("devops"),
-	QA("qa");
+	MEMBER("ROLE_MEMBER"),
+	ADMIN("ROLE_ADMIN"),
+	MANAGER("ROLE_MANAGER"),
+	DEVOPS("ROLE_DEVOPS"),
+	QA("ROLE_QA");
 
 	override fun getAuthority(): String = this.roleName
 }

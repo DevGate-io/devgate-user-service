@@ -1,5 +1,6 @@
 package com.devgate.config
 
+import com.devgate.auth.security.JwtAccessDeniedHandler
 import com.devgate.auth.security.JwtAuthenticationEntryPoint
 import com.devgate.auth.security.RequestFilter
 import com.devgate.utils.PasswordEncoder
@@ -25,7 +26,8 @@ class SecurityConfig(
 	private val requestFilter: RequestFilter,
 	private val passwordEncoder: PasswordEncoder,
 	private val userDetailsService: UserDetailsService,
-	private val authenticationEntryPoint: JwtAuthenticationEntryPoint
+	private val authenticationEntryPoint: JwtAuthenticationEntryPoint,
+	private val accessDeniedHandler: JwtAccessDeniedHandler
 ) {
 	@Bean
 	fun authenticationProvider(): AuthenticationProvider {
@@ -46,7 +48,10 @@ class SecurityConfig(
 			.sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
 			.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter::class.java)
 			.authenticationProvider(authenticationProvider())
-			.exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint) }
+			.exceptionHandling {
+				it.authenticationEntryPoint(authenticationEntryPoint)
+				it.accessDeniedHandler(accessDeniedHandler)
+			}
 			.authorizeHttpRequests {
 				it
 					.requestMatchers(

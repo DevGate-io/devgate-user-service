@@ -5,5 +5,5 @@ import jakarta.validation.constraints.NotNull
 
 data class UpdateUserRoleRequest(
 	@NotNull
-	val role: Role
+	var role: Role
 )

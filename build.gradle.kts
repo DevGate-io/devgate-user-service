@@ -59,7 +59,7 @@ dependencies {
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("tools.jackson.module:jackson-module-kotlin")
-
+	
 // 	docker
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 

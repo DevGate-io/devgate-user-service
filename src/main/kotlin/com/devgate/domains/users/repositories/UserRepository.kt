@@ -1,7 +1,7 @@
 package com.devgate.domains.users.repositories
 
-import com.devgate.users.models.User
-import com.devgate.users.models.enums.Role
+import com.devgate.domains.users.models.User
+import com.devgate.domains.users.models.enums.Role
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*

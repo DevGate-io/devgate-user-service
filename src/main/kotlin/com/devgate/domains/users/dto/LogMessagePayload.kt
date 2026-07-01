@@ -1,7 +1,7 @@
 package com.devgate.domains.users.dto
 
-import com.devgate.users.models.Action
-import com.devgate.users.models.Target
+import com.devgate.domains.users.models.Action
+import com.devgate.domains.users.models.Target
 import java.time.LocalDateTime
 import java.util.UUID
 

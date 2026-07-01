@@ -1,6 +1,6 @@
 package com.devgate.domains.auth.repositories
 
-import com.devgate.auth.models.RefreshToken
+import com.devgate.domains.auth.models.RefreshToken
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query

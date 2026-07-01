@@ -1,14 +1,14 @@
 package com.devgate.domains.auth.controllers
 
-import com.devgate.auth.dto.requests.LoginRequest
-import com.devgate.auth.dto.responses.AuthenticatedResponse
-import com.devgate.auth.dto.responses.RefreshResponse
-import com.devgate.auth.dto.toAuthenticatedResponse
-import com.devgate.auth.dto.toRefreshResponse
-import com.devgate.auth.services.AuthService
-import com.devgate.users.dto.UserDto
-import com.devgate.users.models.User
-import com.devgate.users.services.UserService
+import com.devgate.domains.auth.dto.requests.LoginRequest
+import com.devgate.domains.auth.dto.responses.AuthenticatedResponse
+import com.devgate.domains.auth.dto.responses.RefreshResponse
+import com.devgate.domains.auth.dto.toAuthenticatedResponse
+import com.devgate.domains.auth.dto.toRefreshResponse
+import com.devgate.domains.auth.services.AuthService
+import com.devgate.domains.users.dto.UserDto
+import com.devgate.domains.users.models.User
+import com.devgate.domains.users.services.UserService
 import com.devgate.utils.extensions.response_entity.withCookies
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid

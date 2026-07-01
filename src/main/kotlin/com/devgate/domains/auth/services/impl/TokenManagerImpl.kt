@@ -1,11 +1,11 @@
 package com.devgate.domains.auth.services.impl
 
-import com.devgate.auth.dto.TokenPair
-import com.devgate.auth.models.RefreshToken
-import com.devgate.auth.repositories.RefreshTokenRepository
-import com.devgate.auth.security.TokenGenerator
-import com.devgate.auth.services.TokenManager
-import com.devgate.users.models.User
+import com.devgate.domains.auth.dto.TokenPair
+import com.devgate.domains.auth.models.RefreshToken
+import com.devgate.domains.auth.repositories.RefreshTokenRepository
+import com.devgate.domains.auth.security.TokenGenerator
+import com.devgate.domains.auth.services.TokenManager
+import com.devgate.domains.users.models.User
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

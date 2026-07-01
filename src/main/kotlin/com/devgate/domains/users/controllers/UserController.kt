@@ -1,12 +1,12 @@
 package com.devgate.domains.users.controllers
 
-import com.devgate.users.dto.UpdateUserRoleRequest
-import com.devgate.users.dto.UserDto
-import com.devgate.users.models.Action
-import com.devgate.users.models.User
-import com.devgate.users.models.toTarget
-import com.devgate.users.services.AuditLogService
-import com.devgate.users.services.UserService
+import com.devgate.domains.users.dto.UpdateUserRoleRequest
+import com.devgate.domains.users.dto.UserDto
+import com.devgate.domains.users.models.Action
+import com.devgate.domains.users.models.User
+import com.devgate.domains.users.models.toTarget
+import com.devgate.domains.users.services.AuditLogService
+import com.devgate.domains.users.services.UserService
 import jakarta.validation.Valid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

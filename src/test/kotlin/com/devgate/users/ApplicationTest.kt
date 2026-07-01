@@ -1,4 +1,4 @@
-package com.devgate.users
+package com.devgate.domains.users
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

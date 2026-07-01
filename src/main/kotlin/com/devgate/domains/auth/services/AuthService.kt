@@ -1,9 +1,9 @@
 package com.devgate.domains.auth.services
 
-import com.devgate.auth.dto.AuthenticatedDto
-import com.devgate.auth.dto.RefreshDto
-import com.devgate.auth.dto.requests.LoginRequest
-import com.devgate.users.dto.UserDto
+import com.devgate.domains.auth.dto.AuthenticatedDto
+import com.devgate.domains.auth.dto.RefreshDto
+import com.devgate.domains.auth.dto.requests.LoginRequest
+import com.devgate.domains.users.dto.UserDto
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseCookie
 

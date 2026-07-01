@@ -1,16 +1,16 @@
 package com.devgate.domains.auth.services.impl
 
-import com.devgate.auth.dto.AuthenticatedDto
-import com.devgate.auth.dto.RefreshDto
-import com.devgate.auth.dto.requests.LoginRequest
-import com.devgate.auth.security.TokenGenerator
-import com.devgate.auth.services.AuthService
-import com.devgate.auth.services.JwtCookieService
-import com.devgate.auth.services.TokenManager
-import com.devgate.users.dto.UserDto
-import com.devgate.users.models.User
-import com.devgate.users.repositories.UserRepository
-import com.devgate.users.services.UserService
+import com.devgate.domains.auth.dto.AuthenticatedDto
+import com.devgate.domains.auth.dto.RefreshDto
+import com.devgate.domains.auth.dto.requests.LoginRequest
+import com.devgate.domains.auth.security.TokenGenerator
+import com.devgate.domains.auth.services.AuthService
+import com.devgate.domains.auth.services.JwtCookieService
+import com.devgate.domains.auth.services.TokenManager
+import com.devgate.domains.users.dto.UserDto
+import com.devgate.domains.users.models.User
+import com.devgate.domains.users.repositories.UserRepository
+import com.devgate.domains.users.services.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

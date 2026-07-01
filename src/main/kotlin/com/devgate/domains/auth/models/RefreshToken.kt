@@ -1,6 +1,6 @@
 package com.devgate.domains.auth.models
 
-import com.devgate.users.models.User
+import com.devgate.domains.users.models.User
 import jakarta.persistence.*
 import org.hibernate.annotations.UuidGenerator
 import org.jetbrains.annotations.NotNull

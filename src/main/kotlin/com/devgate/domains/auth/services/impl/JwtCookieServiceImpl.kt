@@ -1,7 +1,7 @@
 package com.devgate.domains.auth.services.impl
 
 import com.devgate.Constants
-import com.devgate.auth.services.JwtCookieService
+import com.devgate.domains.auth.services.JwtCookieService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseCookie

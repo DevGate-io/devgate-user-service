@@ -1,8 +1,8 @@
 package com.devgate.domains.users.dto
 
-import com.devgate.auth.models.Principal
-import com.devgate.users.models.User
-import com.devgate.users.models.enums.Role
+import com.devgate.domains.auth.models.Principal
+import com.devgate.domains.users.models.User
+import com.devgate.domains.users.models.enums.Role
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull

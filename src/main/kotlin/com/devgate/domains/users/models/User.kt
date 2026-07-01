@@ -1,6 +1,6 @@
 package com.devgate.domains.users.models
 
-import com.devgate.users.models.enums.Role
+import com.devgate.domains.users.models.enums.Role
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email

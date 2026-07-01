@@ -1,7 +1,7 @@
 package com.devgate.domains.auth.dto
 
-import com.devgate.auth.dto.responses.AuthenticatedResponse
-import com.devgate.users.models.User
+import com.devgate.domains.auth.dto.responses.AuthenticatedResponse
+import com.devgate.domains.users.models.User
 import org.springframework.http.ResponseCookie
 
 data class AuthenticatedDto(

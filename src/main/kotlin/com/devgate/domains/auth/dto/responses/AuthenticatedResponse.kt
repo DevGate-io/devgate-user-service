@@ -1,7 +1,7 @@
 package com.devgate.domains.auth.dto.responses
 
-import com.devgate.auth.dto.AuthPayload
-import com.devgate.users.models.User
+import com.devgate.domains.auth.dto.AuthPayload
+import com.devgate.domains.users.models.User
 
 data class AuthenticatedResponse(
 	override var user: User,

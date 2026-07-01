@@ -1,6 +1,6 @@
 package com.devgate.domains.auth.dto.requests
 
-import com.devgate.auth.models.Principal
+import com.devgate.domains.auth.models.Principal
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull

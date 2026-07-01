@@ -1,8 +1,8 @@
 package com.devgate.domains.users.services
 
-import com.devgate.users.dto.UserDto
-import com.devgate.users.models.User
-import com.devgate.users.models.enums.Role
+import com.devgate.domains.users.dto.UserDto
+import com.devgate.domains.users.models.User
+import com.devgate.domains.users.models.enums.Role
 import java.util.*
 
 interface UserService {

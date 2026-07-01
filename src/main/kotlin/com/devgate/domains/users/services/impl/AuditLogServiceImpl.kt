@@ -1,10 +1,10 @@
 package com.devgate.domains.users.services.impl
 
-import com.devgate.users.dto.LogMessagePayload
-import com.devgate.users.models.Action
-import com.devgate.users.models.Target
-import com.devgate.users.services.AuditLogService
-import com.devgate.users.services.UserService
+import com.devgate.domains.users.dto.LogMessagePayload
+import com.devgate.domains.users.models.Action
+import com.devgate.domains.users.models.Target
+import com.devgate.domains.users.services.AuditLogService
+import com.devgate.domains.users.services.UserService
 import com.devgate.utils.error
 import org.springframework.amqp.AmqpException
 import org.springframework.amqp.rabbit.core.RabbitTemplate

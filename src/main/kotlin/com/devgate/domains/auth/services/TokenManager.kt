@@ -1,7 +1,7 @@
 package com.devgate.domains.auth.services
 
-import com.devgate.auth.dto.TokenPair
-import com.devgate.users.models.User
+import com.devgate.domains.auth.dto.TokenPair
+import com.devgate.domains.users.models.User
 
 interface TokenManager {
 	fun refreshToken(

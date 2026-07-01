@@ -2,12 +2,12 @@ package com.devgate.domains.users.services.impl
 
 import com.devgate.exceptions.UserAlreadyExistsException
 import com.devgate.exceptions.UserNotFoundException
-import com.devgate.users.dto.UserDto
-import com.devgate.users.dto.toUser
-import com.devgate.users.models.User
-import com.devgate.users.models.enums.Role
-import com.devgate.users.repositories.UserRepository
-import com.devgate.users.services.UserService
+import com.devgate.domains.users.dto.UserDto
+import com.devgate.domains.users.dto.toUser
+import com.devgate.domains.users.models.User
+import com.devgate.domains.users.models.enums.Role
+import com.devgate.domains.users.repositories.UserRepository
+import com.devgate.domains.users.services.UserService
 import com.devgate.utils.PasswordEncoder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

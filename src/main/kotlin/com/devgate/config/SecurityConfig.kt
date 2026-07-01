@@ -51,8 +51,7 @@ class SecurityConfig(
 			.exceptionHandling {
 				it.authenticationEntryPoint(authenticationEntryPoint)
 				it.accessDeniedHandler(accessDeniedHandler)
-			}
-			.authorizeHttpRequests {
+			}.authorizeHttpRequests {
 				it
 					.requestMatchers(
 						"/auth/login",

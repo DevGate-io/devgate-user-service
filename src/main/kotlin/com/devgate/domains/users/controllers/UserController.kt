@@ -37,6 +37,7 @@ class UserController
 		): ResponseEntity<User> {
 			try {
 				val user = userService.getUserById(UUID.fromString(id))
+
 				return ResponseEntity.ok(user)
 			} catch (e: IllegalArgumentException) {
 				logger.error(e.message)
@@ -47,12 +48,13 @@ class UserController
 		@DeleteMapping("/{id}")
 		@PreAuthorize("hasRole('ADMIN')")
 		fun deleteUserById(
-			@PathVariable id: String,
+			@PathVariable id: String
 		): ResponseEntity<Nothing> {
 			try {
-				val uuid = runCatching { UUID.fromString(id) }.getOrElse {
-					return ResponseEntity.badRequest().build()
-				}
+				val uuid =
+					runCatching { UUID.fromString(id) }.getOrElse {
+						return ResponseEntity.badRequest().build()
+					}
 
 				val user = userService.getUserById(uuid)
 

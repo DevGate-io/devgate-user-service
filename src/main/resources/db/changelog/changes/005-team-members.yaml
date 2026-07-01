@@ -1,0 +1,79 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1769500000000-1
+      author: progger
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_teams
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                  name: slug
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+            tableName: teams
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_team_members
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: team_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: role
+                  type: VARCHAR(50)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: joined_at
+                  type: DATETIME
+            tableName: team_members
+        - addForeignKeyConstraint:
+            baseColumnNames: team_id
+            baseTableName: team_members
+            constraintName: fk_team_members_team
+            referencedColumnNames: id
+            referencedTableName: teams
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: team_members
+            constraintName: fk_team_members_user
+            referencedColumnNames: id
+            referencedTableName: users

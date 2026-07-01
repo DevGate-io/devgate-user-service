@@ -9,15 +9,15 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class RabbitMqConfig @Autowired constructor(
-	@Value($$"${rabbitmq.queue}")
-	private val queueName: String
-) {
-	@Bean
-	fun auditQueue(): Queue = Queue(queueName)
+class RabbitMqConfig
+	@Autowired
+	constructor(
+		@Value($$"${rabbitmq.queue}")
+		private val queueName: String
+	) {
+		@Bean
+		fun auditQueue(): Queue = Queue(queueName)
 
-	@Bean
-		fun converter(): MessageConverter {
-		return JacksonJsonMessageConverter()
+		@Bean
+		fun converter(): MessageConverter = JacksonJsonMessageConverter()
 	}
-}

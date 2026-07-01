@@ -11,8 +11,8 @@ import com.devgate.domains.users.dto.UserDto
 import com.devgate.domains.users.models.User
 import com.devgate.domains.users.repositories.UserRepository
 import com.devgate.domains.users.services.UserService
+import com.devgate.utils.Logger
 import jakarta.servlet.http.HttpServletRequest
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseCookie
 import org.springframework.security.authentication.AuthenticationManager
@@ -31,7 +31,6 @@ class AuthServiceImpl(
 	private val jwtCookieService: JwtCookieService,
 	private val authenticationManager: AuthenticationManager
 ) : AuthService {
-	private val logger = LoggerFactory.getLogger(this::class.java)
 
 	private fun authenticate(
 		user: User,
@@ -41,14 +40,14 @@ class AuthServiceImpl(
 			val token = UsernamePasswordAuthenticationToken(user.email, rawPassword, user.authorities)
 			authenticationManager.authenticate(token)
 		} catch (e: BadCredentialsException) {
-			logger.error(e.message)
+			Logger.error(e.message ?: "", this)
 			throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials")
 		}
 
 		val tokenPair = tokenManager.generateTokenPair(user)
 		val refreshCookie = jwtCookieService.generateRefreshCookie(tokenPair.refreshToken)
 
-		logger.info("AuthService[getAuthenticatedResponse]: user ${user.email} was successfully authenticated")
+		Logger.info("AuthService[getAuthenticatedResponse]: user ${user.email} was successfully authenticated", this)
 
 		user.lastLogin = Instant.now()
 		userRepository.save(user)
@@ -83,7 +82,7 @@ class AuthServiceImpl(
 		try {
 			tokenManager.removeRefreshToken(refreshToken)
 		} catch (e: ResponseStatusException) {
-			logger.info("AuthService[logout]: refresh token already absent (${e.reason})")
+			Logger.info("AuthService[logout]: refresh token already absent (${e.reason})", this)
 		}
 
 		return clearedCookie

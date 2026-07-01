@@ -2,14 +2,16 @@ package com.devgate.utils
 
 import org.slf4j.LoggerFactory
 
-fun Any.info(message: String) {
-	LoggerFactory.getLogger(javaClass).info(message)
-}
+object Logger {
+	fun info(message: String, obj: Any) {
+		LoggerFactory.getLogger(obj.javaClass).info(message)
+	}
 
-fun Any.error(message: String) {
-	LoggerFactory.getLogger(javaClass).error(message)
-}
+	fun error(message: String, obj: Any) {
+		LoggerFactory.getLogger(obj.javaClass).error(message)
+	}
 
-fun Any.debug(message: String) {
-	LoggerFactory.getLogger(javaClass).debug(message)
+	fun debug(message: String, obj: Any) {
+		LoggerFactory.getLogger(obj.javaClass).debug(message)
+	}
 }

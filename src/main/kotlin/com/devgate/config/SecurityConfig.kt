@@ -1,8 +1,8 @@
 package com.devgate.config
 
-import com.devgate.auth.security.JwtAccessDeniedHandler
-import com.devgate.auth.security.JwtAuthenticationEntryPoint
-import com.devgate.auth.security.RequestFilter
+import com.devgate.domains.auth.security.JwtAccessDeniedHandler
+import com.devgate.domains.auth.security.JwtAuthenticationEntryPoint
+import com.devgate.domains.auth.security.RequestFilter
 import com.devgate.utils.PasswordEncoder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

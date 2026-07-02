@@ -90,9 +90,13 @@ class TeamController
 			@RequestBody @Valid body: AddMemberRequest
 		): ResponseEntity<TeamMemberResponse> {
 			val uuid = parseUuid(id) ?: return ResponseEntity.badRequest().build()
-			val member = userService.getUserById(uuid)
 
-			auditLogService.sendMessage(Action.TEAM_MEMBER_ADDED, member.toTarget())
+			try {
+				val member = userService.getUserById(body.userId)
+				auditLogService.sendMessage(Action.TEAM_MEMBER_ADDED, member.toTarget())
+			} catch (e: Exception) {
+				Logger.error("Failed to log action: $e", this)
+			}
 
 			return ResponseEntity.ok(teamService.addMember(uuid, body))
 		}
@@ -107,8 +111,12 @@ class TeamController
 			val teamUuid = parseUuid(id) ?: return ResponseEntity.badRequest().build()
 			val memberUuid = parseUuid(memberId) ?: return ResponseEntity.badRequest().build()
 
-			val member = userService.getUserById(memberUuid)
-			auditLogService.sendMessage(Action.TEAM_MEMBER_UPDATED, member.toTarget())
+			try {
+				val member = userService.getUserById(memberUuid)
+				auditLogService.sendMessage(Action.TEAM_MEMBER_UPDATED, member.toTarget())
+			} catch (e: Exception){
+				Logger.error("Failed to log action: $e", this)
+			}
 
 			return ResponseEntity.ok(teamService.updateMemberRole(teamUuid, memberUuid, body))
 		}

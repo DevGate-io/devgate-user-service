@@ -1,6 +1,7 @@
 package com.devgate.domains.auth.security
 
 import com.devgate.Constants
+import com.devgate.domains.users.models.User
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SignatureException
@@ -39,10 +40,21 @@ class TokenGenerator(
 		val now = Date()
 		val expiryDate = Instant.now().plusMillis(expiration)
 
-		return Jwts
-			.builder()
-			.subject(details.username)
-			.claim("type", type.name)
+		val builder =
+			Jwts
+				.builder()
+				.subject(details.username)
+				.claim("type", type.name)
+
+		// Downstream services (integrations, catalog) own no users table: they build the
+		// authentication from these claims instead of loading the user from the database.
+		if (details is User) {
+			builder
+				.claim("userId", details.id.toString())
+				.claim("role", details.role.name)
+		}
+
+		return builder
 			.issuedAt(now)
 			.expiration(Date.from(expiryDate))
 			.signWith(decodedJwtSecret, Jwts.SIG.HS256)

@@ -47,7 +47,7 @@ class TeamController
 			return ResponseEntity.ok(response)
 		}
 
-		@PutMapping("/{id}")
+		@PatchMapping("/{id}")
 		@PreAuthorize("hasRole('ADMIN')")
 		fun update(
 			@PathVariable id: String,

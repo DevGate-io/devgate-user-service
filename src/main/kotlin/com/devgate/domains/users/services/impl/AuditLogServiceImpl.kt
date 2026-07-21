@@ -18,8 +18,10 @@ class AuditLogServiceImpl
 	constructor(
 		private val userService: UserService,
 		private val rabbitTemplate: RabbitTemplate,
-		@Value($$"${rabbitmq.queue}")
-		private val queue: String
+		@Value($$"${rabbitmq.exchange}")
+		private val exchange: String,
+		@Value($$"${rabbitmq.routingKey}")
+		private val routingKey: String
 	) : AuditLogService {
 		override fun sendMessage(
 			action: Action,
@@ -35,7 +37,7 @@ class AuditLogServiceImpl
 				)
 
 			try {
-				rabbitTemplate.convertAndSend(queue, payload)
+				rabbitTemplate.convertAndSend(exchange, routingKey, payload)
 			} catch (e: AmqpException) {
 				Logger.error(e.stackTraceToString(), this)
 			}

@@ -4,7 +4,7 @@ services:
     image: 'postgres:latest'
     restart: unless-stopped
     env_file:
-      - '../../.env'
+      - '../.env'
     ports:
       - '5433:5432'
     networks:
@@ -16,14 +16,14 @@ services:
     container_name: devgate-user-service
     restart: unless-stopped
     env_file:
-      - ../../.env
+      - ../.env
     ports:
       - "8081:8081"
     networks:
       - app_network
     volumes:
-      - ../../build/libs:/app
-      - ../../src/main/resources:/app/src/main/resources
+      - ../build/libs:/app
+      - ../src/main/resources:/app/src/main/resources
     command: [ "java", "-jar", "/app/com.devgate.devgate-users.jar" ]
     depends_on:
       - db

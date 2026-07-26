@@ -23,7 +23,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_FILE="$SCRIPT_DIR/compose.yaml"
-ENV_FILE="$SCRIPT_DIR/../../.env"
+ENV_FILE="$SCRIPT_DIR/../.env"
 
 DB_SERVICE="db"
 BCRYPT_COST=12

@@ -24,7 +24,7 @@ services:
     volumes:
       - ../build/libs:/app
       - ../src/main/resources:/app/src/main/resources
-    command: [ "java", "-jar", "/app/com.devgate.devgate-users.jar" ]
+    command: [ "java", "-jar", "/app/user-service.jar" ]
     depends_on:
       - db
 networks:

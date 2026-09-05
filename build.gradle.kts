@@ -104,6 +104,6 @@ tasks {
 	}
 
 	bootJar {
-		archiveFileName.set("${project.group}.${project.name}.jar")
+		archiveFileName.set("user-service.jar")
 	}
 }

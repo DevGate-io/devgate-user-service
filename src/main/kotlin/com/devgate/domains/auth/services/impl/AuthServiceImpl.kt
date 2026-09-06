@@ -40,7 +40,7 @@ class AuthServiceImpl(
 			val token = UsernamePasswordAuthenticationToken(user.email, rawPassword, user.authorities)
 			authenticationManager.authenticate(token)
 		} catch (e: BadCredentialsException) {
-			Logger.error(e.message ?: "", this)
+			Logger.error(e.stackTraceToString(), this)
 			throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials")
 		}
 

@@ -62,7 +62,7 @@ class TeamServiceImpl
 				Team(
 					name = request.name,
 					slug = request.slug,
-					description = request.description
+					description = request.description ?: ""
 				)
 
 			val owner =

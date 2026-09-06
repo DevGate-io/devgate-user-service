@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotBlank
 data class CreateTeamRequest(
 	@NotBlank
 	val name: String,
-	@NotBlank
-	val description: String,
+	val description: String? = null,
 	@NotBlank
 	val slug: String
 )

@@ -57,7 +57,8 @@ class SecurityConfig(
 						"/auth/login",
 						"/auth/register",
 						"/auth/refresh",
-						"/auth/logout"
+						"/auth/logout",
+						"/auth/need-register"
 					).permitAll()
 				it
 					.requestMatchers(

@@ -29,6 +29,11 @@ class AuthController
 		private val authService: AuthService,
 		private val userService: UserService
 	) {
+		@GetMapping("need-register")
+		fun isNeedRegister(): ResponseEntity<Boolean> {
+			return ResponseEntity.ok(authService.isNeedRegister())
+		}
+
 		@PostMapping("login")
 		fun login(
 			@RequestBody @Valid request: LoginRequest

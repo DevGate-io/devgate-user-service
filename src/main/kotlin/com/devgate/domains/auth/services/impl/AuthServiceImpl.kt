@@ -113,4 +113,8 @@ class AuthServiceImpl(
 			cookie = refreshCookie
 		)
 	}
+
+	override fun isNeedRegister(): Boolean {
+		return userService.getAllUsers().isEmpty()
+	}
 }

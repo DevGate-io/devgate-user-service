@@ -15,4 +15,6 @@ interface AuthService {
 	fun logout(request: HttpServletRequest): ResponseCookie
 
 	fun refresh(request: HttpServletRequest): RefreshDto
+
+	fun isNeedRegister(): Boolean
 }

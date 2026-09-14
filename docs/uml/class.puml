@@ -1,0 +1,133 @@
+@startuml "user-service — доменные сущности"
+
+skinparam classAttributeIconSize 0
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 13
+skinparam ArrowColor #555555
+skinparam class {
+  BorderColor DarkSlateGray
+  BackgroundColor<<entity>> #C8E6C9
+  BackgroundColor<<enum>> #FFF3CD
+  BackgroundColor<<dto>> #BBDEFB
+}
+
+title devgate-user-service — модель данных (JPA-сущности, enum'ы, DTO аудита)
+
+package "domains.users" {
+  class User <<entity>> {
+    id : UUID?
+    fullName : String
+    lastLogin : Instant?
+    role : Role
+    email : String
+    hashedPassword : String
+    --
+    getAuthorities()
+    getPassword()
+    getUsername()
+  }
+
+  class Target <<dto>> {
+    type : String?
+    id : String?
+    label : String?
+  }
+
+  class LogMessagePayload <<dto>> {
+    action : Action?
+    actorId : UUID?
+    target : Target?
+    payload : String?
+    createdAt : LocalDateTime?
+  }
+
+  enum Role <<enum>> {
+    MEMBER
+    ADMIN
+    MANAGER
+    DEVOPS
+    QA
+  }
+
+  enum Action <<enum>> {
+    service.created
+    service.updated
+    service.deleted
+    template.used
+    team.member.added
+    team.member.removed
+    team.member.updated
+    team.created
+    team.updated
+    team.deleted
+    integration.connected
+    integration.disconnected
+    user.created
+    user.updated
+    user.deleted
+    user.role_changed
+  }
+}
+
+package "domains.teams" {
+  class Team <<entity>> {
+    id : UUID?
+    name : String
+    description : String
+    slug : String
+    createdAt : Instant
+    --
+    members : MutableList
+  }
+
+  class TeamMember <<entity>> {
+    id : UUID?
+    role : TeamRole
+    joinedAt : Instant
+    --
+    team : Team
+    user : User
+  }
+
+  enum TeamRole <<enum>> {
+    OWNER
+    MAINTAINER
+    MEMBER
+  }
+}
+
+package "domains.auth" {
+  class RefreshToken <<entity>> {
+    id : UUID?
+    expiresAt : Instant
+    hashedToken : String
+    --
+    user : User
+  }
+}
+
+User "1" <-- "many" TeamMember : members
+Team "1" <-- "many" TeamMember : team
+User "1" <-- "many" RefreshToken : user
+
+User ..> Role : role
+TeamMember ..> TeamRole : role
+LogMessagePayload ..> Action : action
+LogMessagePayload ..> Target : target
+
+note bottom of User
+  Реализует UserDetails (Spring Security).
+  Единственная таблица users во всех сервисах DevGate.
+end note
+
+note bottom of RefreshToken
+  Необратимо захеширован (hashedToken);
+  refresh-токен живёт 30 дней в HttpOnly cookie
+end note
+
+note bottom of LogMessagePayload
+  Wire-контракт аудита (publish в audit.exchange).
+  Зеркалится в каждом сервисе-продюсере.
+end note
+
+@enduml

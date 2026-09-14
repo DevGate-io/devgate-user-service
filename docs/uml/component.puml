@@ -1,0 +1,86 @@
+@startuml "user-service — компоненты"
+
+skinparam componentStyle rectangle
+skinparam nodesep 50
+skinparam ranksep 70
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 13
+skinparam ArrowColor #555555
+
+skinparam component {
+  BorderColor DarkSlateGray
+  BackgroundColor<<controller>> #BBDEFB
+  BackgroundColor<<service>> #C8E6C9
+  BackgroundColor<<security>> #E1BEE7
+  BackgroundColor<<repo>> #FFF3CD
+  BackgroundColor<<infra>> #ECEFF1
+}
+skinparam queue {
+  BackgroundColor #FFF3CD
+  BorderColor #B8860B
+}
+
+title devgate-user-service — внутренние компоненты (порт 8081, Postgres 5433)
+
+package "HTTP / auth" {
+  [AuthController\n/auth: login, register,\nrefresh, logout, me,\nneed-register] as AUTH <<controller>>
+  [UserController\n/users: CRUD, role] as USER <<controller>>
+  [TeamController\n/teams: CRUD, members] as TEAM <<controller>>
+}
+
+package "Сервисный слой" {
+  [AuthService] as AUTH_SVC <<service>>
+  [UserService + UserServiceImpl] as USER_SVC <<service>>
+  [TeamService + TeamServiceImpl] as TEAM_SVC <<service>>
+  [AuditLogService + impl] as AUDIT <<service>>
+}
+
+package "Security" {
+  [RequestFilter\n(claims -> Authentication)] as FILTER <<security>>
+  [TokenGenerator\n+ TokenManager] as TM <<security>>
+  [JwtCookieService\n(access 15' + refresh 30d)] as COOK <<security>>
+  [JwtAuthenticationEntryPoint 401\n+ JwtAccessDeniedHandler 403] as HANDLERS <<security>>
+}
+
+package "Persistence" {
+  [UserRepository] as UR <<repo>>
+  [TeamRepository] as TR <<repo>>
+  [TeamMemberRepository] as MR <<repo>>
+  [RefreshTokenRepository] as RTR <<repo>>
+}
+
+queue "RabbitMQ\naudit.exchange" as RMQ
+
+database "PostgreSQL 5433" as PG
+
+AUTH --> AUTH_SVC
+USER --> USER_SVC
+TEAM --> TEAM_SVC
+AUTH_SVC --> USER_SVC
+AUTH_SVC --> TM
+AUTH_SVC --> COOK
+USER_SVC --> UR
+TEAM_SVC --> TR
+TEAM_SVC --> MR
+AUTH_SVC --> RTR
+AUDIT --> RMQ : LogMessagePayload\n(best-effort)
+
+UR --> PG : users
+TR --> PG : teams
+MR --> PG : team_members
+RTR --> PG : refresh_tokens
+
+FILTER ..> AUTH : создаёт Authentication
+FILTER --> HANDLERS : 401 / 403
+
+note bottom of FILTER
+  Единственный сервис с таблицей users —
+  строит Authentication через UserDetailsService.
+end note
+
+note bottom of AUDIT
+  Publish best-effort: ошибка публикации
+  только логируется, запрос не валится.
+end note
+
+@enduml

@@ -1,0 +1,88 @@
+@startuml "user-service — flow аутентификации"
+
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 13
+skinparam sequence {
+  ArrowColor #555555
+  LifeLineBorderColor DarkSlateGray
+  LifeLineBackgroundColor #E8EAF6
+  ParticipantBorderColor DarkSlateGray
+  ParticipantBackgroundColor<<controller>> #BBDEFB
+  ParticipantBackgroundColor<<service>> #C8E6C9
+  ParticipantBackgroundColor<<security>> #E1BEE7
+  ParticipantBackgroundColor<<db>> #FFF3CD
+  ParticipantBackgroundColor<<ext>> #ECEFF1
+}
+
+title devgate-user-service — register / login / refresh / logout
+
+actor Пользователь as U
+participant "AuthController\n/auth" as CTRL <<controller>>
+participant "AuthService\n(impl)" as SVC <<service>>
+participant "UserRepository" as REPO <<db>>
+participant "TokenManager\n+ TokenGenerator" as TM <<security>>
+participant "JwtCookieService" as COOK <<security>>
+database "PostgreSQL\nusers / refresh_tokens" as PG <<db>>
+
+U -> CTRL : POST /auth/register\n{email, password, ...}
+activate CTRL
+  CTRL -> SVC : register(request)
+  activate SVC
+    SVC -> REPO : createUser(request)
+    activate REPO
+      REPO -> PG : INSERT users
+      REPO --> SVC : User (role, hashedPassword)
+    deactivate REPO
+
+    SVC -> TM : generateTokenPair(user)
+    activate TM
+      TM -> TM : access JWT HS256 (15 мин)\n+ refresh JWT (30 дней)
+      TM --> SVC : TokenPair
+    deactivate TM
+
+    SVC -> TM : save refresh (hash)
+    TM -> PG : INSERT refresh_tokens
+
+    SVC -> COOK : generateRefreshCookie(...)
+    COOK --> SVC : ResponseCookie (HttpOnly)
+    SVC --> CTRL : AuthenticatedDto (access + cookie)
+  deactivate SVC
+  CTRL --> U : 200 {accessToken}\nSet-Cookie: jwt-refresh-cookie
+deactivate CTRL
+
+U -> CTRL : POST /auth/login {email, password}
+activate CTRL
+  CTRL -> SVC : login(request)
+  activate SVC
+    SVC -> REPO : findByEmail(email) ?? 401
+    SVC -> TM : authenticate() {password check}
+    SVC --> CTRL : cookie + accessToken
+  deactivate SVC
+  CTRL --> U : 200 + Set-Cookie refresh
+deactivate CTRL
+
+U -> CTRL : POST /auth/refresh (cookie)
+activate CTRL
+  CTRL -> SVC : refresh(request)
+  activate SVC
+    SVC -> COOK : getRefreshTokenFromCookie()
+    SVC -> TM : validate + rotate refresh
+    TM -> PG : invalidate old / insert new
+    SVC --> CTRL : TokenPair + новый cookie
+  deactivate SVC
+  CTRL --> U : 200 {accessToken} + Set-Cookie
+deactivate CTRL
+
+U -> CTRL : POST /auth/logout
+activate CTRL
+  CTRL -> SVC : logout(request)
+  activate SVC
+    SVC -> COOK : generateCleanCookie()
+    SVC -> TM : removeRefreshToken(hash)
+    TM -> PG : DELETE refresh_tokens
+    SVC --> CTRL : очищенный cookie
+  deactivate SVC
+  CTRL --> U : 204 + Set-Cookie (пустой)
+deactivate CTRL
+
+@enduml

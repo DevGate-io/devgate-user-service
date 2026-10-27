@@ -26,7 +26,7 @@ class GlobalErrorHandler {
 
 	@ExceptionHandler(AuthorizationDeniedException::class)
 	fun handleAuthorizationDeniedException(exception: AuthorizationDeniedException): ProblemDetail =
-		ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.message)
+		ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, exception.message)
 
 	@ExceptionHandler(ApiException::class)
 	fun handleUserNotFoundException(exception: ApiException): ProblemDetail =

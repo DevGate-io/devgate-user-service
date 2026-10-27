@@ -3,6 +3,7 @@ package com.devgate.domains.auth.services.impl
 import com.devgate.domains.auth.dto.AuthenticatedDto
 import com.devgate.domains.auth.dto.RefreshDto
 import com.devgate.domains.auth.dto.requests.LoginRequest
+import com.devgate.domains.auth.repositories.RegistrationLockRepository
 import com.devgate.domains.auth.security.TokenGenerator
 import com.devgate.domains.auth.services.AuthService
 import com.devgate.domains.auth.services.JwtCookieService
@@ -21,6 +22,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
 
@@ -31,7 +33,8 @@ class AuthServiceImpl(
 	private val tokenGenerator: TokenGenerator,
 	private val tokenManager: TokenManager,
 	private val jwtCookieService: JwtCookieService,
-	private val authenticationManager: AuthenticationManager
+	private val authenticationManager: AuthenticationManager,
+	private val registrationLockRepository: RegistrationLockRepository
 ) : AuthService {
 
 	private fun authenticate(
@@ -63,8 +66,12 @@ class AuthServiceImpl(
 	}
 
 	// Self-registration only bootstraps the platform: the first user is always ADMIN,
-	// everyone else is created by an admin via POST /users.
+	// everyone else is created by an admin via POST /users. The lock + transaction make the
+	// "no users yet" check and the insert atomic across concurrent requests.
+	@Transactional
 	override fun register(request: UserDto): AuthenticatedDto {
+		registrationLockRepository.acquire()
+
 		if (!isNeedRegister()) {
 			throw ApiException(message = "Registration is closed", httpStatus = HttpStatus.FORBIDDEN)
 		}

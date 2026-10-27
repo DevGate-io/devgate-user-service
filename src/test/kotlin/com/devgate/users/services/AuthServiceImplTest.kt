@@ -2,6 +2,7 @@ package com.devgate.users.services
 
 import com.devgate.domains.auth.dto.requests.LoginRequest
 import com.devgate.domains.auth.dto.TokenPair
+import com.devgate.domains.auth.repositories.RegistrationLockRepository
 import com.devgate.domains.auth.security.TokenGenerator
 import com.devgate.domains.auth.services.JwtCookieService
 import com.devgate.domains.auth.services.TokenManager
@@ -25,6 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.inOrder
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
@@ -76,6 +78,9 @@ internal class AuthServiceImplTest {
 
 	@Mock
 	private lateinit var authenticationManager: AuthenticationManager
+
+	@Mock
+	private lateinit var registrationLockRepository: RegistrationLockRepository
 
 	@InjectMocks
 	private lateinit var authService: AuthServiceImpl
@@ -132,7 +137,28 @@ internal class AuthServiceImplTest {
 			}
 
 		assertEquals(HttpStatus.FORBIDDEN, exception.httpStatus)
+		verify(registrationLockRepository).acquire()
 		verify(userService, never()).createUser(request)
+	}
+
+	@Test
+	fun `register - acquires registration lock before checking and creating users`() {
+		val request = UserDto(fullName = "New User", email = "new@test.com", role = Role.ADMIN, password = "password123")
+		val user = fakeUser.copy(email = "new@test.com", fullName = "New User", role = Role.ADMIN)
+		val refreshCookie = ResponseCookie.from("jwt-refresh-cookie", "refresh-token").build()
+
+		`when`(userService.getAllUsers()).thenReturn(emptyList())
+		`when`(userService.createUser(request)).thenReturn(user)
+		`when`(tokenManager.generateTokenPair(user)).thenReturn(fakeTokenPair)
+		`when`(jwtCookieService.generateRefreshCookie("refresh-token")).thenReturn(refreshCookie)
+		`when`(userRepository.save(user)).thenReturn(user)
+
+		authService.register(request)
+
+		val order = inOrder(registrationLockRepository, userService)
+		order.verify(registrationLockRepository).acquire()
+		order.verify(userService).getAllUsers()
+		order.verify(userService).createUser(request)
 	}
 
 	@Test

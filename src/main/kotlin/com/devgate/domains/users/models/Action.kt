@@ -20,6 +20,9 @@ enum class Action(
 	TEAM_DELETED("team.deleted"),
 
 	ORGANIZATION_CREATED("organization.created"),
+	DEPARTMENT_CREATED("department.created"),
+	DEPARTMENT_UPDATED("department.updated"),
+	DEPARTMENT_DELETED("department.deleted"),
 
 	INTEGRATION_CONNECTED("integration.connected"),
 	INTEGRATION_DISCONNECTED("integration.disconnected"),

@@ -12,6 +12,9 @@ import org.hibernate.annotations.UuidGenerator
 import java.time.Instant
 import java.util.UUID
 
+// Top-level departments have depth 1.
+const val MAX_DEPARTMENT_DEPTH = 3
+
 @Entity
 @Table(name = "departments")
 class Department(

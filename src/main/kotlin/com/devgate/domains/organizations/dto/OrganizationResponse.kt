@@ -29,6 +29,13 @@ fun OrganizationResponse.toTarget() =
 		type = "organization"
 	)
 
+fun Department.toTarget() =
+	Target(
+		id = id.toString(),
+		label = name,
+		type = "department"
+	)
+
 fun Organization.toResponse(): OrganizationResponse {
 	val childrenByParentId = departments.groupBy { it.parent?.id }
 

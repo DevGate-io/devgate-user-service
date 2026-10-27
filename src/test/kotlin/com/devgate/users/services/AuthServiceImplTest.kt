@@ -12,6 +12,7 @@ import com.devgate.domains.users.models.copy
 import com.devgate.domains.users.models.enums.Role
 import com.devgate.domains.users.repositories.UserRepository
 import com.devgate.domains.users.services.UserService
+import com.devgate.exceptions.ApiException
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -24,6 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
@@ -80,10 +82,11 @@ internal class AuthServiceImplTest {
 
 	@Test
 	fun `register - positive case`() {
-		val request = UserDto(fullName = "New User", email = "new@test.com", role = Role.MEMBER, password = "password123")
+		val request = UserDto(fullName = "New User", email = "new@test.com", role = Role.ADMIN, password = "password123")
 		val user = fakeUser.copy(email = "new@test.com", fullName = "New User")
 		val refreshCookie = ResponseCookie.from("jwt-refresh-cookie", "refresh-token").build()
 
+		`when`(userService.getAllUsers()).thenReturn(emptyList())
 		`when`(userService.createUser(request)).thenReturn(user)
 		`when`(tokenManager.generateTokenPair(user)).thenReturn(fakeTokenPair)
 		`when`(jwtCookieService.generateRefreshCookie("refresh-token")).thenReturn(refreshCookie)
@@ -99,9 +102,44 @@ internal class AuthServiceImplTest {
 	}
 
 	@Test
-	fun `register - user creation fails`() {
+	fun `register - ignores requested role and creates ADMIN`() {
 		val request = UserDto(fullName = "New User", email = "new@test.com", role = Role.MEMBER, password = "password123")
+		val adminRequest = request.copy(role = Role.ADMIN)
+		val user = fakeUser.copy(email = "new@test.com", fullName = "New User", role = Role.ADMIN)
+		val refreshCookie = ResponseCookie.from("jwt-refresh-cookie", "refresh-token").build()
 
+		`when`(userService.getAllUsers()).thenReturn(emptyList())
+		`when`(userService.createUser(adminRequest)).thenReturn(user)
+		`when`(tokenManager.generateTokenPair(user)).thenReturn(fakeTokenPair)
+		`when`(jwtCookieService.generateRefreshCookie("refresh-token")).thenReturn(refreshCookie)
+		`when`(userRepository.save(user)).thenReturn(user)
+
+		authService.register(request)
+
+		verify(userService).createUser(adminRequest)
+		verify(userService, never()).createUser(request)
+	}
+
+	@Test
+	fun `register - closed when users exist`() {
+		val request = UserDto(fullName = "New User", email = "new@test.com", role = Role.ADMIN, password = "password123")
+
+		`when`(userService.getAllUsers()).thenReturn(listOf(fakeUser))
+
+		val exception =
+			assertThrows(ApiException::class.java) {
+				authService.register(request)
+			}
+
+		assertEquals(HttpStatus.FORBIDDEN, exception.httpStatus)
+		verify(userService, never()).createUser(request)
+	}
+
+	@Test
+	fun `register - user creation fails`() {
+		val request = UserDto(fullName = "New User", email = "new@test.com", role = Role.ADMIN, password = "password123")
+
+		`when`(userService.getAllUsers()).thenReturn(emptyList())
 		`when`(userService.createUser(request)).thenThrow(ResponseStatusException(HttpStatus.CONFLICT))
 
 		assertThrows(ResponseStatusException::class.java) {

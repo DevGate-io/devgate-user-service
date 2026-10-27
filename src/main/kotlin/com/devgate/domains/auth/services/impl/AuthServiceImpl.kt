@@ -9,8 +9,10 @@ import com.devgate.domains.auth.services.JwtCookieService
 import com.devgate.domains.auth.services.TokenManager
 import com.devgate.domains.users.dto.UserDto
 import com.devgate.domains.users.models.User
+import com.devgate.domains.users.models.enums.Role
 import com.devgate.domains.users.repositories.UserRepository
 import com.devgate.domains.users.services.UserService
+import com.devgate.exceptions.ApiException
 import com.devgate.utils.Logger
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
@@ -60,8 +62,14 @@ class AuthServiceImpl(
 		)
 	}
 
+	// Self-registration only bootstraps the platform: the first user is always ADMIN,
+	// everyone else is created by an admin via POST /users.
 	override fun register(request: UserDto): AuthenticatedDto {
-		val user: User = userService.createUser(request)
+		if (!isNeedRegister()) {
+			throw ApiException(message = "Registration is closed", httpStatus = HttpStatus.FORBIDDEN)
+		}
+
+		val user: User = userService.createUser(request.copy(role = Role.ADMIN))
 		return authenticate(user, request.password)
 	}
 

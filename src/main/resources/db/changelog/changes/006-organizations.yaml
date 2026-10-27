@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1793103300478-1
+      author: progger
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_organizations
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uc_organizations_name
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: description
+                  type: VARCHAR(1000)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+            tableName: organizations
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_departments
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: organization_id
+                  type: UUID
+              - column:
+                  name: parent_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: description
+                  type: VARCHAR(1000)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+            tableName: departments
+        - addForeignKeyConstraint:
+            baseColumnNames: organization_id
+            baseTableName: departments
+            constraintName: fk_departments_organization
+            referencedColumnNames: id
+            referencedTableName: organizations
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseColumnNames: parent_id
+            baseTableName: departments
+            constraintName: fk_departments_parent
+            referencedColumnNames: id
+            referencedTableName: departments
+            onDelete: CASCADE
+        - createIndex:
+            columns:
+              - column:
+                  name: organization_id
+            indexName: idx_departments_organization_id
+            tableName: departments
